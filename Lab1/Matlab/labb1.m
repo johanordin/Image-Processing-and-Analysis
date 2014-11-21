@@ -24,16 +24,26 @@ plot(2.^gfun)
 
 ImgCell = {'Img1.tiff', 'Img2.tiff','Img3.tiff','Img4.tiff','Img5.tiff','Img6.tiff','Img7.tiff','Img8.tiff','Img9.tiff','Img10.tiff','Img11.tiff','Img12.tiff','Img13.tiff','Img14.tiff'};
 
-%%%%
-%Spara bilderna i en 4-dim matris
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Spara bilderna i en 4-dim matris
+% Ladda in bilderna i en cell array
 imagesCell = {imread('Img1.tiff'), imread('Img2.tiff'),imread('Img3.tiff'),imread('Img4.tiff'),imread('Img5.tiff'),imread('Img6.tiff'),imread('Img7.tiff'),imread('Img8.tiff'),imread('Img9.tiff'),imread('Img10.tiff'),imread('Img11.tiff'),imread('Img12.tiff'),imread('Img13.tiff'),imread('Img14.tiff')};
+% Skapa en ny matris för den första bilden
 pics4dimarray  = imread('Img1.tiff');
 
+% Skapa den 4-dimensionella matrisen med alla bilderna
 for i =2:14
     pics4dimarray(:,:,:,i) = imagesCell{i};
 end
 
-%%%
+% Creating a copy of the 4dim array index with zeros
+pics4dimarrayNew = pics4dimarray.*0;
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
 % maxvärde av en av de första bilderna
 image_dark=imread('Img1.tiff');
 M = max(max(image_dark(:,:,1)));
@@ -77,23 +87,12 @@ plot(arr3);
 % Set some time constant
 time = 1/128;
 
-%E = zeros(size(bild,1)*size(bild,2),1);
-
-% Read in the picture --> storage for the new pictures
-newimagesCell = {imread('Img1.tiff'), imread('Img2.tiff'),imread('Img3.tiff'),imread('Img4.tiff'),imread('Img5.tiff'),imread('Img6.tiff'),imread('Img7.tiff'),imread('Img8.tiff'),imread('Img9.tiff'),imread('Img10.tiff'),imread('Img11.tiff'),imread('Img12.tiff'),imread('Img13.tiff'),imread('Img14.tiff')};
-%sample = uint(zeros(683, 1024, 3));   %# Creates a 20x10x3 matrix
-%newimagesCell = {sample,sample,sample,sample,sample,sample,sample,sample,sample,sample,sample,sample,sample,sample};
-
-
 %%%
 %index i --> picture in the picture array
 %index j --> every pixel in the picture
 
 for i = 1:14
-    %temp = ImgCell{i};
-    %bild = imread(temp);
     for j = 1:683*1024*1
-        
         z = imagesCell{i}(j)+1;
         newimagesCell{i}(j) = gfun(z) - log2(time);
     end
@@ -103,7 +102,34 @@ end
 
 imshow(newimagesCell{13})
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+% % % %intensity in picture --> 0 - 255
+% % % %gfun values maps --> 1 - 256 dvs 1 -> 0 och 256->255
 
+time = 1/128;
+
+for values= 0:255
+    index = find(pics4dimarray(:) == values);
+    pics4dimarrayNew(index) = gfun(values+1) - log2(time);
+end
+
+
+% Plot the exposure images
+for i=1:14
+    imshow(pics4dimarrayNew(:,:,:,i))
+    figure;
+end
+
+
+%% Sample of small 4-dim array
+% % % %intensity in picture --> 0 - 255
+% % % %gfun values maps --> 1 - 256 dvs 1 -> 0 och 256->255
+% for values= 0:255
+%     index = find(A(:) == values);
+%     A(index) = gfun(values+1);
+% end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%
 
 %imagesCell{i}(j)+1
@@ -125,23 +151,23 @@ end
 
 
 %%
-
-% % % % C = permute(B,2)
-% % % % C = permute(B,1)
-% % % % C = permute(B,1)C = zeros(4, 4)
-% % % % C = zeros(4, 4)
-% % % % B = cat(dim, A1, A2...)
-% % % % B = cat(3, A, A, A)
-% % % % B = cat(3, A, A, A);
-% % % % B = cat(2, A, A, A);
-% % % % 
+% Set some time constant
+time = 1/128;
+time2 = 1/128;
 
 
-%
+storage = zeros(14,1);
+storage2 = zeros(14,1);
+for x=1:14
+
+    storage(x) = log2(time);
+    storage2(x) = log2(time2);
+    time = time*2;
+end
 
 
-
-
-
-
+plot(storage);
+hold on ;
+plot(storage2);
+%%
 
