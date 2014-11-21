@@ -22,9 +22,18 @@ plot(2.^gfun)
 %Kontroll över index
 %[x,y] = ind2sub(size(bild1), index_M)
 
-ImgCell = {'Img1.tiff', 'Img2.tiff','Img3.tiff','Img4.tiff','Img5.tiff','Img6.tiff','Img7.tiff','Img8.tiff','Img9.tiff','Img10.tiff','Img11.tiff','Img12.tiff','Img13.tiff','Img14.tiff',};
-imagesCell = {imread('Img1.tiff'), imread('Img2.tiff'),imread('Img3.tiff'),imread('Img4.tiff'),imread('Img5.tiff'),imread('Img6.tiff'),imread('Img7.tiff'),imread('Img8.tiff'),imread('Img9.tiff'),imread('Img10.tiff'),imread('Img11.tiff'),imread('Img12.tiff'),imread('Img13.tiff'),imread('Img14.tiff')};
+ImgCell = {'Img1.tiff', 'Img2.tiff','Img3.tiff','Img4.tiff','Img5.tiff','Img6.tiff','Img7.tiff','Img8.tiff','Img9.tiff','Img10.tiff','Img11.tiff','Img12.tiff','Img13.tiff','Img14.tiff'};
 
+%%%%
+%Spara bilderna i en 4-dim matris
+imagesCell = {imread('Img1.tiff'), imread('Img2.tiff'),imread('Img3.tiff'),imread('Img4.tiff'),imread('Img5.tiff'),imread('Img6.tiff'),imread('Img7.tiff'),imread('Img8.tiff'),imread('Img9.tiff'),imread('Img10.tiff'),imread('Img11.tiff'),imread('Img12.tiff'),imread('Img13.tiff'),imread('Img14.tiff')};
+pics4dimarray  = imread('Img1.tiff');
+
+for i =2:14
+    pics4dimarray(:,:,:,i) = imagesCell{i};
+end
+
+%%%
 % maxvärde av en av de första bilderna
 image_dark=imread('Img1.tiff');
 M = max(max(image_dark(:,:,1)));
@@ -56,6 +65,7 @@ for i=1:length(ImgCell)
 end
 
 
+% Plottar de pixelvärderna för de olika bilderna
 plot(arr1);
 plot(arr2);
 plot(arr3);
