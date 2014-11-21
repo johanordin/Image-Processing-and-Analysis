@@ -109,11 +109,13 @@ imshow(newimagesCell{13})
 
 time = 1/128;
 
-for values= 0:255
-    index = find(pics4dimarray(:) == values);
-    pics4dimarrayNew(index) = gfun(values+1) - log2(time);
+for i=1:14
+    for values= 0:255
+        index = find(pics4dimarray(:,:,:,i) == values);
+        pics4dimarrayNew(index) = gfun(values+1) - log2(time);
+        time = time*2;
+    end
 end
-
 
 % Plot the exposure images
 for i=1:14
@@ -170,4 +172,26 @@ plot(storage);
 hold on ;
 plot(storage2);
 %%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% % Skapa en 3x3 matris
+% A = [1, 2, 1;2 4 5; 3 5 6]
+% % skapa en 3x3x2 matris (3-dim)
+% A(:,:,2) = [1 2 2;7 6 5; 2 5 2]
+% % hitta värdet 7
+% index = find(A(:,:,:) == 7)
+% A(index) = 16
+% 
+% index = find(A(:) == 1)
+% A(:,:,3) = [1 2 2;7 6 5; 2 5 2]
+% 
+% %Skapa en 3x3x3x2 matris (4-dim)
+% A(:,:,:,2) = A
+% index = find(A(:) == 1)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
 
