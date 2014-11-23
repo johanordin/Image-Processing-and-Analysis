@@ -91,7 +91,8 @@ plot(arr3);
 
 time = 1/128;
 
-% Divade it with exposure time to get exposure value
+
+%Divade it with exposure time to get exposure value
 for i=1:14
     pics4dimarrayNew(:,:,:,i) = pics4dimarrayNew(:,:,:,i) / time;
     time = time*2;
@@ -129,9 +130,21 @@ montage(weightfunc)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 
 
-A  = ((weightfunc.*pics4dimarrayNew)./weightfunc);
+time = 1/128;
 
-montage(A);
+% EJ FÄRDIG OCH FUNKTIONELL
+
+%for i=1:3
+    for values = 0:255
+        index = find(pics4dimarray(:,:,:,:) == values);
+        E(index) = weightfunc.* (2.^gfun(values+1,1) - log( double(pics4dimarrayNew(:,:,:,:))) - log(double((time))));
+        time = time*2;
+    end
+%end
+
+%A  = ((weightfunc.*pics4dimarrayNew)./weightfunc);
+
+montage(E);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% "Exposure time - testing"
