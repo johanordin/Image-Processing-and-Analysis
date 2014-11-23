@@ -89,8 +89,8 @@ plot(arr3);
     end
 %end
 
-time = 1/128;
-
+%time = 1/128;
+time = 1/50;
 
 %Divade it with exposure time to get exposure value
 for i=1:14
