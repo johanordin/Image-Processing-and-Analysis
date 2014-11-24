@@ -79,6 +79,21 @@ plot(arr2);
 plot(arr3);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+
+time = 1/50;
+
+for values = 0:255
+        index = find(pics4dimarray(:,:,:,:) == values);
+        pics4dimarrayNew(index) = log((2.^gfun(values+1,1)*255) / (max((2.^gfun(:,1)))));
+end
+
+for i=1:14
+    pics4dimarrayNew(:,:,:,i) = pics4dimarrayNew(:,:,:,i) - log(time);
+    time = time*2;
+end
+    
+
 %% Original images to exposure images
 
 % Calutale f^-(Z) = E*delta(t)
@@ -130,21 +145,20 @@ montage(weightfunc)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 
 
-time = 1/128;
+E = zeros(683,1024,3);
+W = zeros(683,1024,3);
 
-% EJ FÄRDIG OCH FUNKTIONELL
+for i = 1:14
+    
+    %E = E + ((weightfunc(:,:,:,i).*pics4dimarrayNew(:,:,:,i)));
+    
+    W = W + weightfunc(:,:,:,i);
+    
+end
 
-%for i=1:3
-    for values = 0:255
-        index = find(pics4dimarray(:,:,:,:) == values);
-        E(index) = weightfunc.* (2.^gfun(values+1,1) - log( double(pics4dimarrayNew(:,:,:,:))) - log(double((time))));
-        time = time*2;
-    end
-%end
+%E = E / W;
 
-%A  = ((weightfunc.*pics4dimarrayNew)./weightfunc);
-
-montage(E);
+%montage(E);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% "Exposure time - testing"
