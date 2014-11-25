@@ -28,14 +28,19 @@ imagesCell = {imread('Img1.tiff'), imread('Img2.tiff'),imread('Img3.tiff'),imrea
 % Skapa en ny matris för den första bilden för att alokera minne
  pics4dimarray  = imread('Img1.tiff');
 
+ %
+finalMatrix = double(pics4dimarray*0);
+finalWeight = double(pics4dimarray*0);
+
 % Skapa den 4-dimensionella matrisen med resterande bilderna
 for i = 2:14
     pics4dimarray(:,:,:,i) = imagesCell{i};
 end
 
 % Creating a copy of the 4dim array index with zeros
-pics4dimarrayNew = pics4dimarray.*0;
-weightfunc = pics4dimarray.*0;
+pics4dimarrayNew = double(pics4dimarray.*0);
+weightfunc = double(pics4dimarray.*0);
+%
 
 montage(pics4dimarray);
 
@@ -79,17 +84,19 @@ plot(arr2);
 plot(arr3);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%
-
-time = 1/50;
+%% Logaritm images to exposure images
 
 for values = 0:255
         index = find(pics4dimarray(:,:,:,:) == values);
-        pics4dimarrayNew(index) = log((2.^gfun(values+1,1)*255) / (max((2.^gfun(:,1)))));
+        pics4dimarrayNew(index) = (2.^gfun(values+1,1)) / (max((2.^gfun(:,1)))) ;
 end
 
+montage(pics4dimarrayNew);
+%%
+time = 1/50;
+
 for i=1:14
-    pics4dimarrayNew(:,:,:,i) = pics4dimarrayNew(:,:,:,i) - log(time);
+    pics4dimarrayNew(:,:,:,i) = pics4dimarrayNew(:,:,:,i) / time;
     time = time*2;
 end
     
@@ -100,10 +107,11 @@ end
 %for i=1:3
     for values = 0:255
         index = find(pics4dimarray(:,:,:,:) == values);
-        pics4dimarrayNew(index) = (2.^gfun(values+1,1)*255) / (max((2.^gfun(:,1))));
+        pics4dimarrayNew(index) = 255*( (2.^gfun(values+1,1)) / (max((2.^gfun(:,1)))) );
     end
 %end
 
+%%
 %time = 1/128;
 time = 1/50;
 
@@ -118,47 +126,47 @@ montage(pics4dimarrayNew);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Weightfunction
 
+
+    valueMatrix = double(pics4dimarray(:,:,:,1).*0);
+
 for i = 1:14
-    
-    valueMatrix = pics4dimarray(:,:,:,i).*0;
-    
-    % Calculate the max/min value of all the images
-    minimum = min(min(min(pics4dimarray(:,:,:,i))));
-    maximum = max(max(max(pics4dimarray(:,:,:,i))));
-    
-    condition = (minimum + maximum)/2;
-    
-    d = uint8(pics4dimarray(:,:,:,i) <= condition);
-        
-    w1 = d.* (pics4dimarray(:,:,:,i) - (valueMatrix+minimum));
+    for kanal=1:3
+        % Calculate the max/min value of all the images
+        minimum = min(min(min(pics4dimarray(:,:,kanal,i))));
+        maximum = max(max(max(pics4dimarray(:,:,kanal,i))));
 
-    e = uint8(pics4dimarray(:,:,:,i) > condition);
-        
-    w2 = e.* ((valueMatrix+maximum) - pics4dimarray(:,:,:,i ));
-    
-    weightfunc(:,:,:,i) = w1+w2;
-    
+        condition = (minimum + maximum)/2;
+
+        d = (pics4dimarray(:,:,kanal,i) <= condition);
+
+        w1 = d.* (double(pics4dimarray(:,:,kanal,i)) - (valueMatrix(:,:,kanal)+double(minimum)));
+
+        e = (pics4dimarray(:,:,kanal,i) > condition);
+
+        w2 = e.* ((valueMatrix(:,:,kanal)+double(maximum)) - double(pics4dimarray(:,:,kanal,i )) );
+
+        weightfunc(:,:,kanal,i) = (w1+w2)/255;
+
+    end
 end
-
 montage(weightfunc)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 
 
-E = zeros(683,1024,3);
-W = zeros(683,1024,3);
 
 for i = 1:14
     
     %E = E + ((weightfunc(:,:,:,i).*pics4dimarrayNew(:,:,:,i)));
+    finalMatrix = finalMatrix + (weightfunc(:,:,:,i).*pics4dimarrayNew(:,:,:,i) );
     
-    W = W + weightfunc(:,:,:,i);
-    
+    %W = W + weightfunc(:,:,:,i);
+    finalWeight = finalWeight + weightfunc(:,:,:,i);
 end
 
-%E = E / W;
+finalMatrix = finalMatrix ./ finalWeight;
 
-%montage(E);
+imshow(finalMatrix);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% "Exposure time - testing"
