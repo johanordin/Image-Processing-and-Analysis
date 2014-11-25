@@ -85,22 +85,24 @@ plot(arr3);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Logaritm images to exposure images
-
+%for i=1:3
 for values = 0:255
         index = find(pics4dimarray(:,:,:,:) == values);
-        pics4dimarrayNew(index) = (2.^gfun(values+1,1)) / (max((2.^gfun(:,1)))) ;
+        pics4dimarrayNew(index) = 2.^gfun(values+1,1) / 2.^max((gfun(:,1)));
+        %pics4dimarrayNew(index) = gfun(values+1,i);
 end
+%end
 
 montage(pics4dimarrayNew);
 %%
 time = 1/50;
 
 for i=1:14
-    pics4dimarrayNew(:,:,:,i) = pics4dimarrayNew(:,:,:,i) / time;
+    pics4dimarrayNew(:,:,:,i) = pics4dimarrayNew(:,:,:,i) - log2(time);
     time = time*2;
 end
     
-
+montage(pics4dimarrayNew);
 %% Original images to exposure images
 
 % Calutale f^-(Z) = E*delta(t)
@@ -132,9 +134,11 @@ montage(pics4dimarrayNew);
 for i = 1:14
     for kanal=1:3
         % Calculate the max/min value of all the images
-        minimum = min(min(min(pics4dimarray(:,:,kanal,i))));
-        maximum = max(max(max(pics4dimarray(:,:,kanal,i))));
-
+        minimum = double( min(min(min(pics4dimarray(:,:,kanal,i)))) );
+        maximum = double( max(max(max(pics4dimarray(:,:,kanal,i)))) );
+        
+        % Något fel sker här med föregående rader. Ändrade till double på
+        % de övre. Maxvärde blev tidigare 256.
         condition = (minimum + maximum)/2;
 
         d = (pics4dimarray(:,:,kanal,i) <= condition);
