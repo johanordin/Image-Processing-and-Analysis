@@ -31,15 +31,20 @@ imagesCell = {imread('Img1.tiff'), imread('Img2.tiff'),imread('Img3.tiff'),imrea
  %
 finalMatrix = double(pics4dimarray*0);
 finalWeight = double(pics4dimarray*0);
+finalMatrix2 = double(pics4dimarray*0);
+
 
 % Skapa den 4-dimensionella matrisen med resterande bilderna
 for i = 2:14
     pics4dimarray(:,:,:,i) = imagesCell{i};
 end
 
+
 % Creating a copy of the 4dim array index with zeros
 pics4dimarrayNew = double(pics4dimarray.*0);
 weightfunc = double(pics4dimarray.*0);
+
+valueMatrix = double(pics4dimarray);
 %
 
 montage(pics4dimarray);
@@ -85,12 +90,12 @@ plot(arr3);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Logaritm images to exposure images
-for i=1:3
+%for i=1:3
     for values = 0:255
-            index = find(pics4dimarray(:,:,i,:) == values);
-            pics4dimarrayNew(index) = gfun(values+1,i); 
+            index = find(pics4dimarray(:,:,1,:) == values);
+            pics4dimarrayNew(index) = gfun(values+1,1); 
     end
-end
+%end
 
 time = 1;
 
@@ -104,38 +109,47 @@ end
 
     maximum = 255;
     minimum = 0;
-    valueMatrix = double(pics4dimarray(:,:,:,:));
+    %valueMatrix = double(pics4dimarray(:));
     condition = 255/2;
     
+    d = (valueMatrix <= condition);
 
-        d = (pics4dimarray(:) <= condition);
+    w1 = d.* (valueMatrix );
 
-        w1 = d.* (double(pics4dimarray(:)) );
+    e = (valueMatrix > condition);
 
-        e = (pics4dimarray(:) > condition);
+    w2 = e.* (maximum - valueMatrix );
 
-        w2 = e.* (maximum - double(pics4dimarray(: )) );
+    weightfunc = (2*(w1+w2))/255;
 
-        weightfunc(:) = (w1+w2)/255;
-
-montage(weightfunc)
+    montage(weightfunc)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 
 
 
-for i = 1:14
+%for i = 1:14
     
     %E = E + ((weightfunc(:,:,:,i).*pics4dimarrayNew(:,:,:,i)));
-    finalMatrix = finalMatrix + (weightfunc(:,:,:,i).*pics4dimarrayNew(:,:,:,i) );
+    %finalMatrix = finalMatrix + (weightfunc(:,:,:,i).*pics4dimarrayNew(:,:,:,i) );
     
     %W = W + weightfunc(:,:,:,i);
-    finalWeight = finalWeight + weightfunc(:,:,:,i);
-end
+    %finalWeight = finalWeight + weightfunc(:,:,:,i);
+    
+    
+    %disp(finalMatrix(340:350,508:512,1));
+    %pause(1);
+%end
 
-finalMatrix = 2.^(finalMatrix ./ finalWeight);
+%finalMatrix = sum(weightfunc.*pics4dimarrayNew, 4);
 
-imshow(finalMatrix);
+finalMatrix2 = sum(pics4dimarrayNew, 4);
+
+finalWeight = sum(weightfunc, 4);
+
+finalMatrix = 2.^((finalMatrix2.*finalWeight) ./ finalWeight);
+
+imshow(tonemap(finalMatrix));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% "Exposure time - testing"
