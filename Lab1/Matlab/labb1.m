@@ -25,7 +25,7 @@ load('gfun.mat');
 % Ladda in bilderna i en cell array
 imagesCell = {imread('Img1.tiff'), imread('Img2.tiff'),imread('Img3.tiff'),imread('Img4.tiff'),imread('Img5.tiff'),imread('Img6.tiff'),imread('Img7.tiff'),imread('Img8.tiff'),imread('Img9.tiff'),imread('Img10.tiff'),imread('Img11.tiff'),imread('Img12.tiff'),imread('Img13.tiff'),imread('Img14.tiff')};
 
-% Skapa en ny matris för den första bilden för att alokera minne
+% Skapa en ny matris fï¿½r den fï¿½rsta bilden fï¿½r att alokera minne
  pics4dimarray  = imread('Img1.tiff');
 
  %
@@ -47,17 +47,17 @@ montage(pics4dimarray);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% "Preperations assigments"
 
-% maxvärde av en av de första bilderna
+% maxvï¿½rde av en av de fï¿½rsta bilderna
 image_dark=imread('Img1.tiff');
 M = max(max(image_dark(:,:,1)));
 index_M = find(image_dark == M);
 
-% minvärde av en av de sista bilderna
+% minvï¿½rde av en av de sista bilderna
 image_light=imread('Img14.tiff');
 m = min(min(image_light(:,:,1)));
 index_m = find(image_light == m,1);
 
-% Medianvärde
+% Medianvï¿½rde
 image_median=imread('Img9.tiff');
 med = median(median(image_median(:,:,1)));
 index_med = find(image_median == med,1);
@@ -78,7 +78,7 @@ for i = 1:length(ImgCell)
 end
 
 
-% Plottar de pixelvärderna för de olika bilderna
+% Plottar de pixelvï¿½rderna fï¿½r de olika bilderna
 plot(arr1);
 plot(arr2);
 plot(arr3);
@@ -88,42 +88,16 @@ plot(arr3);
 %for i=1:3
 for values = 0:255
         index = find(pics4dimarray(:,:,:,:) == values);
-        pics4dimarrayNew(index) = 2.^gfun(values+1,1) / 2.^max((gfun(:,1)));
-        %pics4dimarrayNew(index) = gfun(values+1,i);
+        pics4dimarrayNew(index) = gfun(values+1,1);
 end
 %end
 
-montage(pics4dimarrayNew);
-%%
-time = 1/50;
+time = 1;
 
 for i=1:14
     pics4dimarrayNew(:,:,:,i) = pics4dimarrayNew(:,:,:,i) - log2(time);
     time = time*2;
 end
-    
-montage(pics4dimarrayNew);
-%% Original images to exposure images
-
-% Calutale f^-(Z) = E*delta(t)
-%for i=1:3
-    for values = 0:255
-        index = find(pics4dimarray(:,:,:,:) == values);
-        pics4dimarrayNew(index) = 255*( (2.^gfun(values+1,1)) / (max((2.^gfun(:,1)))) );
-    end
-%end
-
-%%
-%time = 1/128;
-time = 1/50;
-
-%Divade it with exposure time to get exposure value
-for i=1:14
-    pics4dimarrayNew(:,:,:,i) = pics4dimarrayNew(:,:,:,i) / time;
-    time = time*2;
-end
-
-montage(pics4dimarrayNew);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Weightfunction
@@ -133,13 +107,11 @@ montage(pics4dimarrayNew);
 
 for i = 1:14
     for kanal=1:3
-        % Calculate the max/min value of all the images
-        minimum = double( min(min(min(pics4dimarray(:,:,kanal,i)))) );
-        maximum = double( max(max(max(pics4dimarray(:,:,kanal,i)))) );
         
-        % Något fel sker här med föregående rader. Ändrade till double på
-        % de övre. Maxvärde blev tidigare 256.
-        condition = (minimum + maximum)/2;
+        
+        % Nï¿½got fel sker hï¿½r med fï¿½regï¿½ende rader. ï¿½ndrade till double pï¿½
+        % de ï¿½vre. Maxvï¿½rde blev tidigare 256.
+        condition = 255/2;
 
         d = (pics4dimarray(:,:,kanal,i) <= condition);
 
@@ -201,7 +173,7 @@ imshow(finalMatrix);
 % A = [1, 2, 1;2 4 5; 3 5 6]
 % % skapa en 3x3x2 matris (3-dim)
 % A(:,:,2) = [1 2 2;7 6 5; 2 5 2]
-% % hitta värdet 7
+% % hitta vï¿½rdet 7
 % index = find(A(:,:,:) == 7)
 % A(index) = 16
 % 
