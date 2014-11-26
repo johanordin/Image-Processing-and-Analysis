@@ -47,7 +47,7 @@ montage(pics4dimarray);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% "Preperations assigments"
 
-% maxv�rde av en av de f�rsta bilderna
+% maxvrde av en av de frsta bilderna
 image_dark=imread('Img1.tiff');
 M = max(max(image_dark(:,:,1)));
 index_M = find(image_dark == M);
@@ -85,12 +85,12 @@ plot(arr3);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Logaritm images to exposure images
-%for i=1:3
-for values = 0:255
-        index = find(pics4dimarray(:,:,:,:) == values);
-        pics4dimarrayNew(index) = gfun(values+1,1);
+for i=1:3
+    for values = 0:255
+            index = find(pics4dimarray(:,:,i,:) == values);
+            pics4dimarrayNew(index) = gfun(values+1,i); 
+    end
 end
-%end
 
 time = 1;
 
@@ -102,29 +102,22 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Weightfunction
 
+    maximum = 255;
+    minimum = 0;
+    valueMatrix = double(pics4dimarray(:,:,:,:));
+    condition = 255/2;
+    
 
-    valueMatrix = double(pics4dimarray(:,:,:,1).*0);
+        d = (pics4dimarray(:) <= condition);
 
-for i = 1:14
-    for kanal=1:3
-        
-        
-        % N�got fel sker h�r med f�reg�ende rader. �ndrade till double p�
-        % de �vre. Maxv�rde blev tidigare 256.
-        condition = 255/2;
+        w1 = d.* (double(pics4dimarray(:)) );
 
-        d = (pics4dimarray(:,:,kanal,i) <= condition);
+        e = (pics4dimarray(:) > condition);
 
-        w1 = d.* (double(pics4dimarray(:,:,kanal,i)) - (valueMatrix(:,:,kanal)+double(minimum)));
+        w2 = e.* (maximum - double(pics4dimarray(: )) );
 
-        e = (pics4dimarray(:,:,kanal,i) > condition);
+        weightfunc(:) = (w1+w2)/255;
 
-        w2 = e.* ((valueMatrix(:,:,kanal)+double(maximum)) - double(pics4dimarray(:,:,kanal,i )) );
-
-        weightfunc(:,:,kanal,i) = (w1+w2)/255;
-
-    end
-end
 montage(weightfunc)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -140,7 +133,7 @@ for i = 1:14
     finalWeight = finalWeight + weightfunc(:,:,:,i);
 end
 
-finalMatrix = finalMatrix ./ finalWeight;
+finalMatrix = 2.^(finalMatrix ./ finalWeight);
 
 imshow(finalMatrix);
 
