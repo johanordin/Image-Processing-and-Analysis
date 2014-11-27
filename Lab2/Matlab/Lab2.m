@@ -1,4 +1,9 @@
-%%
+
+
+%%Lab 2: Operations in the image domain
+
+%%Part 1: Vignette and uneven illumination
+%% A
 
 
 
@@ -21,5 +26,10 @@ plot(R(N/2,:));
 subplot(1,2,2);
 imshow(R, []);
 
-%%
+%% B
 
+RS = R;
+
+%for i=1:512*512
+    RS = R ./ R(512/2-1,1);
+%end
