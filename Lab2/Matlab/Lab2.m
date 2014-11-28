@@ -13,6 +13,7 @@ pictures(:,:,:,2) = im2double(imread('HWhite1.jpg'));
 
 pictures = imresize(pictures, 0.5);
 
+
 N = 512;
 
 [X,Y] = meshgrid((1:N));
@@ -28,8 +29,42 @@ imshow(R, []);
 
 %% B
 
-RS = R;
+SR = R;
 
-%for i=1:512*512
-    RS = R ./ R(512/2-1,1);
-%end
+SR = R ./ R(512/2-1,1);
+
+
+QR = round((SR*100));
+
+ average = zeros(141,2);
+ norm_average = zeros(141,2);
+ 
+ 
+for i=1:2
+    for m=1:141
+        % Create logical matrix Maskm for each value m
+        Maskm = QR == m;
+
+        % Sum the pixelvalues for each m in QR
+        sum_pv = sum(sum(Maskm.*pictures(:,:,:,i)));
+
+        % Count the number of elements of m in QR // samma sak som sum(sum(QR
+        % == 1)) //
+        nr_objects = sum(sum(Maskm));
+
+        average(m,i) = sum_pv/nr_objects;
+    end
+    norm_average(:,i) = average(:,i) / max(average(:,i));
+end
+
+
+
+
+subplot(1,2,1);
+plot(norm_average(:,1));
+subplot(1,2,2);
+plot(norm_average(:,2));
+
+%pictures(:,:,:,2)
+
+
