@@ -36,12 +36,11 @@ SR = R ./ R(512/2-1,1);
 
 QR = round((SR*100));
 
- average = zeros(141,2);
- norm_average = zeros(141,2);
- 
+average = zeros(141,2);
+norm_average = zeros(141,2);
  
 for i=1:2
-    for m=1:141
+    for m=1:100
         % Create logical matrix Maskm for each value m
         Maskm = QR == m;
 
@@ -57,14 +56,52 @@ for i=1:2
     norm_average(:,i) = average(:,i) / max(average(:,i));
 end
 
-
-
-
 subplot(1,2,1);
 plot(norm_average(:,1));
 subplot(1,2,2);
 plot(norm_average(:,2));
 
 %pictures(:,:,:,2)
+
+
+%%
+
+
+redEyes = im2double(imread('BoldRedEye.JPG'));
+
+% Extract the read channel
+redChannel = redEyes(:,:,1);
+
+load('RedEyeMask');
+
+sq_filter_32 = ones(32,32);
+
+MFilterImage = imfilter(redChannel, sq_filter_32);
+EyeFilterImage = imfilter(redChannel, RedEyeMask);
+
+ratio = EyeFilterImage./MFilterImage;
+
+imshow(ratio)
+
+BW = imregionalmax(ration) .* quantile(ratio, 0.2, 2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
