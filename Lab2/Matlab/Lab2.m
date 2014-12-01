@@ -5,23 +5,18 @@
 %%Part 1: Vignette and uneven illumination
 %% A
 
-
-
+% Read in the pictures, convert to double and store in 4-dim matrix
 pictures(:,:,:,1) = im2double(imread('CWhite1.jpg'));
-
 pictures(:,:,:,2) = im2double(imread('HWhite1.jpg'));
 
+% Resize the images to half the size
 pictures = imresize(pictures, 0.5);
 
-
 N = 512;
-
 [X,Y] = meshgrid((1:N));
 [T,R] = cart2pol(X-N/2,Y-N/2);
 
-
-%Plot the vector R(N/2,:) and use imshow(R,[])
-
+% Plot the vector R(N/2,:) and use imshow(R,[])
 subplot(1,2,1)
 plot(R(N/2,:));
 subplot(1,2,2);
@@ -30,9 +25,7 @@ imshow(R, []);
 %% B
 
 SR = R;
-
 SR = R ./ R(512/2-1,1);
-
 
 QR = round((SR*100));
 
@@ -56,22 +49,22 @@ for i=1:2
     norm_average(:,i) = average(:,i) / max(average(:,i));
 end
 
-subplot(1,2,1);
+subplot(2,1,1);
 plot(norm_average(:,1));
-subplot(1,2,2);
+subplot(2,1,2);
 plot(norm_average(:,2));
 
 %pictures(:,:,:,2)
 
 
-%%
-
+%% Part 2:
 
 redEyes = im2double(imread('BoldRedEye.JPG'));
 
 % Extract the read channel
 redChannel = redEyes(:,:,1);
 
+% Load in the mask
 load('RedEyeMask');
 
 sq_filter_32 = ones(32,32);
@@ -83,8 +76,9 @@ ratio = EyeFilterImage./MFilterImage;
 
 imshow(ratio)
 
-BW = imregionalmax(ration) .* quantile(ratio, 0.2, 2)
+BW = imregionalmax(ratio) .* quantile(ratio, 0.9, 3);
 
+imshow(BW)
 
 
 
