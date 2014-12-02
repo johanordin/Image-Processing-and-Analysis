@@ -67,16 +67,29 @@ redChannel = redEyes(:,:,1);
 % Load in the mask
 load('RedEyeMask');
 
-sq_filter_32 = ones(32,32);
+sq_filter_32 = ones(32);
 
 MFilterImage = imfilter(redChannel, sq_filter_32);
 EyeFilterImage = imfilter(redChannel, RedEyeMask);
 
+figure;
 ratio = EyeFilterImage./MFilterImage;
 
-imshow(ratio)
+imshow(ratio/max(max(ratio)))
+figure;
 
-BW = imregionalmax(ratio) .* quantile(ratio, 0.9, 3);
+quant = quantile(quantile(ratio, 0.97), 0.97);
+
+
+ratio = ratio >= quant;
+
+imshow(ratio);
+figure;
+
+%%BW = imregionalmax(ratio) .* quantile(ratio, 0.9, 3);
+
+% return two-dimensional eight-connected neighborhood 
+BW = ratio.*imregionalmax(ratio);
 
 imshow(BW)
 
