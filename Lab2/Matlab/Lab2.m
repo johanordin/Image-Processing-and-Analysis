@@ -57,7 +57,7 @@ plot(norm_average(:,2));
 %pictures(:,:,:,2)
 
 
-%% Part 2:
+%% Part 2: Correlation 
 
 redEyes = im2double(imread('BoldRedEye.JPG'));
 
@@ -72,26 +72,38 @@ sq_filter_32 = ones(32);
 MFilterImage = imfilter(redChannel, sq_filter_32);
 EyeFilterImage = imfilter(redChannel, RedEyeMask);
 
-figure;
 ratio = EyeFilterImage./MFilterImage;
 
-imshow(ratio/max(max(ratio)))
+% Normalize the ratio matrix
+imshow(ratio / max(max(ratio)))
 figure;
 
-quant = quantile(quantile(ratio, 0.97), 0.97);
-
+quant = quantile(quantile(ratio, 0.90), 0.90);
 
 ratio = ratio >= quant;
 
 imshow(ratio);
 figure;
 
-%%BW = imregionalmax(ratio) .* quantile(ratio, 0.9, 3);
-
 % return two-dimensional eight-connected neighborhood 
 BW = ratio.*imregionalmax(ratio);
 
 imshow(BW)
+
+
+%% Part 3: Registration
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
