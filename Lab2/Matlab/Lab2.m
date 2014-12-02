@@ -67,7 +67,7 @@ redChannel = redEyes(:,:,1);
 % Load in the mask
 load('RedEyeMask');
 
-sq_filter_32 = ones(32);
+sq_filter_32 = ones(48);
 
 MFilterImage = imfilter(redChannel, sq_filter_32);
 EyeFilterImage = imfilter(redChannel, RedEyeMask);
@@ -78,8 +78,7 @@ ratio = EyeFilterImage./MFilterImage;
 imshow(ratio/max(max(ratio)))
 figure;
 
-quant = quantile(quantile(ratio, 0.97), 0.97);
-
+quant = quantile(quantile(ratio, 0.98), 0.98);
 
 ratio = ratio >= quant;
 
@@ -92,20 +91,66 @@ figure;
 BW = ratio.*imregionalmax(ratio);
 
 imshow(BW)
+imshowpair(BW, redEyes)
+
+% Bonus part
+
+% BWinv = BW < 0.5;
+% redEyes(:,:,1) = BWinv .* redChannel;
+% 
+% imshow(redEyes)
+
+
+%% Part 3:
+
+Gim = im2double(imread('GCPins512.jpg'));
+Him = im2double(imread('GHPins512.jpg'));
+
+
+% 
+imshow(Gim);
+% figure;
+% imshow(Him);
+
+% Minsta antalet punkter som kravs for att rotera, skala och translatera.
+M = 3;
+
+[GX,GY] = ginput(M);
+
+numstr = {'P1','P2', 'P3'};
+k = 1:3;
+hold on;
+text(GX(k),GY(k), numstr(k));
+
+% Canon
+GC = zeros(M,2);
+
+GC(:,1) = GX;
+GC(:,2) = GY;
+
+GC1 = GC;
+GC1(:,3) = ones(3,1);
+
+% Holga
+
+HC = zeros(M,2);
+
+HC1 = HC;
+HC1(:,3) = ones(3,1);
+
+% GC1*A = HC1 --> mldivide to sovle A = HC1 / GC1
+
+A = HC1 / GC1;
+
+new = Gim*0;
+
+for i=1:(size(Gim,1)*size(Gim,2))
+    new(i) = Gim(i)*A;
+end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
+%%
 
 
 
