@@ -105,7 +105,6 @@ Him = im2double(imread('GHPins512.jpg'));
 imshow(Gim);
 % figure;
 % imshow(Him);
->>>>>>> 01727115907614b5cdb1fe39377a933f8bb389a1
 
 % Minsta antalet punkter som kravs for att rotera, skala och translatera.
 M = 3;
@@ -137,11 +136,22 @@ HC1(:,3) = ones(3,1);
 
 A = HC1 / GC1;
 
-new = Gim*0;
+% http://se.mathworks.com/help/images/performing-general-2-d-spatial-transformations.html#f12-31921
 
-for i=1:(size(Gim,1)*size(Gim,2))
-    new(i) = Gim(i)*A;
-end
+tform_translate = affine2d(A);
+cb_rgb = imwarp(rgb,tform_translate,'FillValues',[187;192;57]);
+
+figure;
+imshow(cb_rgb)
+
+% new = Gim*0;
+% 
+% for i=1:(size(Gim,1)*size(Gim,2))
+%     new(i) = Gim(i)*A;
+% end
+
+
+
 
 %%
 
