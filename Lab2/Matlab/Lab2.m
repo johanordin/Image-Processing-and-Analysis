@@ -102,19 +102,18 @@ imshowpair(BW, redEyes)
 Gim = im2double(imread('GCPins512.jpg'));
 Him = im2double(imread('GHPins512.jpg'));
 
-imshow(Gim);
-% figure;
-% imshow(Him);
-
 % Minsta antalet punkter som kravs for att rotera, skala och translatera.
 M = 3;
 
-[GX,GY] = ginput(M);
+numstr_1 = {'G1','G2','G3'};
+imshow(Gim);
 
-numstr = {'P1','P2', 'P3'};
-k = 1:3;
+[GX,GY] = ginput(M);
+   
 hold on;
-text(GX(k),GY(k), numstr(k));
+text(GX(k),GY(k), numstr_1(k));
+
+k = 1:3;
 
 % Canon
 GC = zeros(M,2);
@@ -125,25 +124,45 @@ GC(:,2) = GY;
 GC1 = GC;
 GC1(:,3) = ones(3,1);
 
+%GC1(:,3) = zeros(3,1);
+%GC1(3,3) = 1;
+
 % Holga
 
+figure
+imshow(Him);
+numstr_2 = {'H1','H2','H3'};
+[HX,HY] = ginput(M);
+
+hold on;
+text(HX(k),HY(k), numstr_2(k));
+
 HC = zeros(M,2);
+
+HC(:,1) = HX;
+HC(:,2) = HY;
 
 HC1 = HC;
 HC1(:,3) = ones(3,1);
 
+%HC1(:,3) = zeros(3,1);
+%HC1(3,3) = 1;
+
+
 % GC1*A = HC1 --> mldivide to sovle A = HC1 / GC1
 
-A = HC1 / GC1;
+%A = HC1 / GC1;
+A = mldivide(HC1,GC1);
 
 % http://se.mathworks.com/help/images/performing-general-2-d-spatial-transformations.html#f12-31921
 
-tform_translate = affine2d(A);
-cb_rgb = imwarp(rgb,tform_translate,'FillValues',[187;192;57]);
+tform = affine2d(A);
+cb_rgb = imwarp(Him,tform);
 
 figure;
 imshow(cb_rgb)
 
+imshowpair(Him, cb_rgb);
 % new = Gim*0;
 % 
 % for i=1:(size(Gim,1)*size(Gim,2))
