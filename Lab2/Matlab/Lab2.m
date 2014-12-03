@@ -1,4 +1,6 @@
-
+%% TNM087 - Labb 1 
+% Christoffer Engelbrektsson & Johan Nordin
+% MT3
 
 %%Lab 2: Operations in the image domain
 
