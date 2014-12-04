@@ -154,8 +154,8 @@ HC1(:,3) = ones(3,1);
 
 % GC1*A = HC1 --> mldivide to sovle A = HC1 / GC1
 
-%A = HC1 / GC1;
-A = mldivide(HC1,GC1);
+A = HC1 \ GC1;
+%A = mldivide(HC1,GC1);
 
 % http://se.mathworks.com/help/images/performing-general-2-d-spatial-transformations.html#f12-31921
 
@@ -173,42 +173,71 @@ newPic = Gim*0;
 coord = [0 0 0]';
 newcoord = [0 0 0]';
 
-for col=1:(size(Gim,2))
-    for row=1:(size(Gim,1))
-        coord = [0 0 0]';
-        newcoord = [0 0 0]';
-        
-        coord(1) = row;
-        coord(2) = col;
-        
-        newcoord = A*coord;
-        newcoord = ceil(newcoord);
-        
-        % eventuell funktion for att interpolera icke existerande
-        % koordinater
-        % interp2 
-        
-        
-        if (newcoord(2) <= 0)
-            disp(newcoord(2));
-            newcoord(2) = 1;
-        end
-        if (newcoord(1) <= 0)
-            disp(newcoord(1));
-            newcoord(1) = 1;
-        end
-        
-%         disp(newcoord);
-%         pause(0.5);
-        
-        newPic(newcoord(1), newcoord(2)) = Gim(row, col);
-        
+% for col=1:(size(Gim,2))
+%     for row=1:(size(Gim,1))
+%         coord = [0 0 0]';
+%         newcoord = [0 0 0]';
+%         
+%         coord(1) = row;
+%         coord(2) = col;
+%         
+%         newcoord = A*coord;
+%         newcoord = ceil(newcoord);
+%         
+%         % eventuell funktion for att interpolera icke existerande
+%         % koordinater
+%         % interp2 
+%         
+%         
+%         if (newcoord(2) <= 0)
+%             disp(newcoord(2));
+%             newcoord(2) = 1;
+%         end
+%         if (newcoord(1) <= 0)
+%             disp(newcoord(1));
+%             newcoord(1) = 1;
+%         end
+%         
+% %         disp(newcoord);
+% %         pause(0.5);
+%         
+%         newPic(newcoord(1), newcoord(2)) = Gim(row, col);
+%         
+%     end
+% end
+
+
+
+
+%% forsoker loopa med ett linjart index
+% ska en kolumn vektor
+q = [0 0 0]';
+p = [0 0 0];
+result = Gim*0;
+
+for i = 1: (500*512) %256000
+    %konvertarar linjart index till subscript
+    [r,c] = ind2sub(size(Gim), i);
+    
+    q(1) = r;
+    q(2) = c;
+    
+    p = A*q;
+    p = ceil(p);
+    
+    if (p(2) <= 0)
+        disp(p(2));
+        p(2) = 1;
     end
+    if (p(1) <= 0)
+        disp(p(1));
+        p(1) = 1;
+    end
+     
+    index = sub2ind(size(Gim), p(1), p(2));
+    result(index) = Gim(i);
+    
 end
-
-
-
-
 
 
 %%
