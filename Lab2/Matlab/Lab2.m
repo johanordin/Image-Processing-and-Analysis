@@ -209,37 +209,47 @@ newcoord = [0 0 0]';
 
 
 
-%% forsoker loopa med ett linjart index
+% forsoker loopa med ett linjart index
 % ska en kolumn vektor
 q = [0 0 0]';
-p = [0 0 0];
+p = [0 0 0]';
 result = Gim*0;
 
-for i = 1: (500*512) %256000
+for i = 1: 256000 %256000
     %konvertarar linjart index till subscript
     [r,c] = ind2sub(size(Gim), i);
     
     q(1) = r;
     q(2) = c;
     
-    p = A*q;
-    p = ceil(p);
+    p = q'*A;
+    p = round(p);
     
     if (p(2) <= 0)
         disp(p(2));
-        p(2) = 1;
+        p(2) = 1; 
     end
     if (p(1) <= 0)
         disp(p(1));
         p(1) = 1;
     end
+    if ((p(2) > 512))
+        disp(p(2));
+        p(2) = 512;
+    end
+    if ((p(1) > 500))
+        disp(p(2));
+        p(1) = 500;
+    end
+    
      
     index = sub2ind(size(Gim), p(1), p(2));
     result(index) = Gim(i);
     
 end
 
-
+imshow(result)
+figure;imshowpair(Him, result)
 %%
 
 
