@@ -211,20 +211,29 @@ newcoord = [0 0 0]';
 
 % forsoker loopa med ett linjart index
 % ska en kolumn vektor
+
+% Vektor med de orginal koordinater
 q = [0 0 0]';
+% Vektor med de nya transformerade koordinaterna
 p = [0 0 0]';
+% Tom bilder matris som ska innehalla den nya transformerade bilden
 result = Gim*0;
 
 for i = 1: 256000 %256000
+    
     %konvertarar linjart index till subscript
     [r,c] = ind2sub(size(Gim), i);
-    
+   
+    % Nya icke-linjara koordinater
     q(1) = r;
     q(2) = c;
     
+    % Multiplicera koordinaterna med matrisen A
     p = q'*A;
+    % Avrunda till heltal
     p = round(p);
-    
+     
+    % Vilkor for att transformerade koordinater ska ligga inom bilden
     if (p(2) <= 0)
         disp(p(2));
         p(2) = 1; 
@@ -242,13 +251,14 @@ for i = 1: 256000 %256000
         p(1) = 500;
     end
     
-     
+    % Konvertera tillbaka till linjara koordinater 
     index = sub2ind(size(Gim), p(1), p(2));
+    % Satt in motsvarande pixelvarde i den nya tranformerade bilder.
     result(index) = Gim(i);
     
 end
 
-imshow(result)
+imshow(result);
 figure;imshowpair(Him, result)
 %%
 
