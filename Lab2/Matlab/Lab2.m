@@ -106,6 +106,7 @@ Him = im2double(imread('GHPins512.jpg'));
 
 % Minsta antalet punkter som kravs for att rotera, skala och translatera.
 M = 3;
+k = 1:3;
 
 numstr_1 = {'G1','G2','G3'};
 imshow(Gim);
@@ -115,7 +116,7 @@ imshow(Gim);
 hold on;
 text(GX(k),GY(k), numstr_1(k));
 
-k = 1:3;
+
 
 % Canon
 GC = zeros(M,2);
@@ -158,18 +159,54 @@ A = mldivide(HC1,GC1);
 
 % http://se.mathworks.com/help/images/performing-general-2-d-spatial-transformations.html#f12-31921
 
-tform = affine2d(A);
-cb_rgb = imwarp(Him,tform);
-
-figure;
-imshow(cb_rgb)
-
-imshowpair(Him, cb_rgb);
-% new = Gim*0;
+% tform = affine2d(A);
+% cb_rgb = imwarp(Him,tform);
 % 
-% for i=1:(size(Gim,1)*size(Gim,2))
-%     new(i) = Gim(i)*A;
-% end
+% figure;
+% imshow(cb_rgb)
+% 
+% imshowpair(Him, cb_rgb);
+
+
+newPic = Gim*0;
+
+coord = [0 0 0]';
+newcoord = [0 0 0]';
+
+for col=1:(size(Gim,2))
+    for row=1:(size(Gim,1))
+        coord = [0 0 0]';
+        newcoord = [0 0 0]';
+        
+        coord(1) = row;
+        coord(2) = col;
+        
+        newcoord = A*coord;
+        newcoord = ceil(newcoord);
+        
+        % eventuell funktion for att interpolera icke existerande
+        % koordinater
+        % interp2 
+        
+        
+        if (newcoord(2) <= 0)
+            disp(newcoord(2));
+            newcoord(2) = 1;
+        end
+        if (newcoord(1) <= 0)
+            disp(newcoord(1));
+            newcoord(1) = 1;
+        end
+        
+%         disp(newcoord);
+%         pause(0.5);
+        
+        newPic(newcoord(1), newcoord(2)) = Gim(row, col);
+        
+    end
+end
+
+
 
 
 
