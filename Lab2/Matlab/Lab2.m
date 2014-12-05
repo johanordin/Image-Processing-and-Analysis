@@ -108,15 +108,14 @@ Him = im2double(imread('GHPins512.jpg'));
 M = 3;
 k = 1:3;
 
-numstr_1 = {'G1','G2','G3'};
+numstr_1 = {'G1','G2','G3','G4'};
 imshow(Gim);
 
 [GX,GY] = ginput(M);
    
 hold on;
 text(GX(k),GY(k), numstr_1(k));
-
-
+close
 
 % Canon
 GC = zeros(M,2);
@@ -127,18 +126,16 @@ GC(:,2) = GY;
 GC1 = GC;
 GC1(:,3) = ones(3,1);
 
-%GC1(:,3) = zeros(3,1);
-%GC1(3,3) = 1;
-
 % Holga
 
 figure
 imshow(Him);
-numstr_2 = {'H1','H2','H3'};
+numstr_2 = {'H1','H2','H3','H3'};
 [HX,HY] = ginput(M);
 
 hold on;
 text(HX(k),HY(k), numstr_2(k));
+close
 
 HC = zeros(M,2);
 
@@ -148,14 +145,29 @@ HC(:,2) = HY;
 HC1 = HC;
 HC1(:,3) = ones(3,1);
 
-%HC1(:,3) = zeros(3,1);
-%HC1(3,3) = 1;
-
 
 % GC1*A = HC1 --> mldivide to sovle A = HC1 / GC1
 
-A = HC1 \ GC1;
+A = GC1 \ HC1  ;
 %A = mldivide(HC1,GC1);
+
+% Create a meshgrid
+[X Y] = meshgrid(1:500, 1:512);
+
+% transform the coordinates
+new = [X(:), Y(:), zeros(256000,1) ]*A;
+
+% interpolate
+Vq = interp2(Gim, new(:,1), new(:,2) );
+
+% reshape back to image 
+B = reshape(Vq, [500 512]);
+
+% show the image
+imshow(B);
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % http://se.mathworks.com/help/images/performing-general-2-d-spatial-transformations.html#f12-31921
 
@@ -167,11 +179,10 @@ A = HC1 \ GC1;
 % 
 % imshowpair(Him, cb_rgb);
 
-
-newPic = Gim*0;
-
-coord = [0 0 0]';
-newcoord = [0 0 0]';
+% newPic = Gim*0;
+% 
+% coord = [0 0 0]';
+% newcoord = [0 0 0]';
 
 % for col=1:(size(Gim,2))
 %     for row=1:(size(Gim,1))
@@ -212,54 +223,53 @@ newcoord = [0 0 0]';
 % forsoker loopa med ett linjart index
 % ska en kolumn vektor
 
-% Vektor med de orginal koordinater
-q = [0 0 0]';
-% Vektor med de nya transformerade koordinaterna
-p = [0 0 0]';
-% Tom bilder matris som ska innehalla den nya transformerade bilden
-result = Gim*0;
+% % Vektor med de orginal koordinater
+% q = [0 0 0]';
+% % Vektor med de nya transformerade koordinaterna
+% p = [0 0 0]';
+% % Tom bilder matris som ska innehalla den nya transformerade bilden
+% result = Gim*0;
 
-for i = 1: 256000 %256000
-    
-    %konvertarar linjart index till subscript
-    [r,c] = ind2sub(size(Gim), i);
-   
-    % Nya icke-linjara koordinater
-    q(1) = r;
-    q(2) = c;
-    
-    % Multiplicera koordinaterna med matrisen A
-    p = q'*A;
-    % Avrunda till heltal
-    p = round(p);
-     
-    % Vilkor for att transformerade koordinater ska ligga inom bilden
-    if (p(2) <= 0)
-        disp(p(2));
-        p(2) = 1; 
-    end
-    if (p(1) <= 0)
-        disp(p(1));
-        p(1) = 1;
-    end
-    if ((p(2) > 512))
-        disp(p(2));
-        p(2) = 512;
-    end
-    if ((p(1) > 500))
-        disp(p(2));
-        p(1) = 500;
-    end
-    
-    % Konvertera tillbaka till linjara koordinater 
-    index = sub2ind(size(Gim), p(1), p(2));
-    % Satt in motsvarande pixelvarde i den nya tranformerade bilder.
-    result(index) = Gim(i);
-    
-end
+% for i = 1: 256000 %256000
+%     
+%     %konvertarar linjart index till subscript
+%     [r,c] = ind2sub(size(Gim), i);
+%    
+%     % Nya icke-linjara koordinater
+%     q(1) = r;
+%     q(2) = c;
+%     
+%     % Multiplicera koordinaterna med matrisen A
+%     p = A*q;
+%     % Avrunda till heltal
+%     p = round(p);
+%      
+%     % Vilkor for att transformerade koordinater ska ligga inom bilden
+%     if (p(2) <= 0)
+%         p(2) = 1; 
+%     end
+%     if (p(1) <= 0)
+%         p(1) = 1;
+%     end
+%     
+%     if ((p(2) > 512))
+%         p(2) = 512;
+%     end
+%     if ((p(1) > 500))
+%         p(1) = 500;
+%     end
+%     
+%     % Konvertera tillbaka till linjara koordinater 
+%     index = sub2ind(size(Gim), p(1), p(2));
+%     
+%     % Satt in motsvarande pixelvarde i den nya tranformerade bilder.
+%     result(index) = Gim(i);
+%     
+% end
 
-imshow(result);
-figure;imshowpair(Him, result)
+% imshow(result);
+% figure;
+% imshowpair(Him, result);
 %%
 
 
