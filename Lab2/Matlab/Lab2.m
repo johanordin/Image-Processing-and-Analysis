@@ -108,7 +108,7 @@ Him = im2double(imread('GHPins512.jpg'));
 M = 3;
 k = 1:3;
 
-numstr_1 = {'G1','G2','G3','G4'};
+numstr_1 = {'G1','G2','G3'};
 imshow(Gim);
 
 [GX,GY] = ginput(M);
@@ -127,10 +127,9 @@ GC1 = GC;
 GC1(:,3) = ones(3,1);
 
 % Holga
-
 figure
 imshow(Him);
-numstr_2 = {'H1','H2','H3','H3'};
+numstr_2 = {'H1','H2','H3'};
 [HX,HY] = ginput(M);
 
 hold on;
@@ -145,7 +144,6 @@ HC(:,2) = HY;
 HC1 = HC;
 HC1(:,3) = ones(3,1);
 
-
 % GC1*A = HC1 --> mldivide to sovle A = HC1 / GC1
 
 A = GC1 \ HC1  ;
@@ -155,20 +153,23 @@ A = GC1 \ HC1  ;
 [X Y] = meshgrid(1:500, 1:512);
 
 % transform the coordinates
-new = [X(:), Y(:), zeros(256000,1) ]*A;
+new = [X(:), Y(:), ones(256000,1) ]*A;
 
 % interpolate
-Vq = interp2(Gim, new(:,1), new(:,2) );
+Vq = interp2(Him, new(:,1), new(:,2) );
 
 % reshape back to image 
-B = reshape(Vq, [500 512]);
+B = reshape(Vq, [512 500]);
 
 % show the image
-imshow(B);
+%imshow(B);
+
+imshowpair(Gim, B);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% Losning med 2 for loopar, som loopar igenom alla pixlar pa bilden.
 % http://se.mathworks.com/help/images/performing-general-2-d-spatial-transformations.html#f12-31921
 
 % tform = affine2d(A);
@@ -217,9 +218,7 @@ imshow(B);
 %     end
 % end
 
-
-
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % forsoker loopa med ett linjart index
 % ska en kolumn vektor
 
@@ -270,6 +269,7 @@ imshow(B);
 % imshow(result);
 % figure;
 % imshowpair(Him, result);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%
 
 
