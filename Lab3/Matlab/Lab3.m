@@ -42,16 +42,16 @@ EdgeSony =  pictures(:,103:153,:,4);
 
 %% B-plot
 
-% figure;
-% %montage(EdgeHolga, EdgeCanon, EdgeScanner, EdgeSony);
-% subplot(1,4,1);
-% imshow(EdgeHolga);
-% subplot(1,4,2);
-% imshow(EdgeCanon);
-% subplot(1,4,3);
-% imshow(EdgeScanner);
-% subplot(1,4,4);
-% imshow(EdgeSony);
+figure;
+%montage(EdgeHolga, EdgeCanon, EdgeScanner, EdgeSony);
+subplot(1,4,1);
+imshow(EdgeHolga);
+subplot(1,4,2);
+imshow(EdgeCanon);
+subplot(1,4,3);
+imshow(EdgeScanner);
+subplot(1,4,4);
+imshow(EdgeSony);
 
 %% C
 
@@ -76,6 +76,9 @@ FFT1EdgeHolga = fftshift(fft(SumEdgeHolgaZeroPad));
 FFT1EdgeCanon = fftshift(fft(SumEdgeCanonZeroPad));
 FFT1EdgeScanner = fftshift(fft(SumEdgeScannerZeroPad));
 FFT1EdgeSony = fftshift(fft(SumEdgeSonyZeroPad));
+
+
+
 
 %% D-plot
 
@@ -142,19 +145,55 @@ NFFT1EdgeCanon = FFT1EdgeCanon/max(FFT1EdgeCanon);
 NFFT1EdgeScanner = FFT1EdgeScanner/max(FFT1EdgeScanner);
 NFFT1EdgeSony = FFT1EdgeSony/max(FFT1EdgeSony);
 
+%% F-plot
+
 figure;
-subplot(1,4,1);
-plot(NFFT1EdgeHolga);
-title('NFFT1EdgeHolga')
-subplot(1,4,2);
-plot(NFFT1EdgeCanon);
-title('NFFT1EdgeCanon')
-subplot(1,4,3);
-plot(NFFT1EdgeScanner);
-title('NFFT1EdgeScanner')
-subplot(1,4,4);
-plot(NFFT1EdgeSony);
-title('NFFT1EdgeSony')
+subplot(1,3,1);
+plot(abs(NFFT1EdgeHolga));
+legend('Abs')
+subplot(1,3,2);
+plot(real(NFFT1EdgeHolga));
+legend('Real')
+title('FFT1EdgeHolga - Normerad')
+subplot(1,3,3);
+plot(imag(NFFT1EdgeHolga));
+legend('Imag')
+
+figure;
+subplot(1,3,1);
+plot(abs(NFFT1EdgeCanon));
+legend('Abs')
+subplot(1,3,2);
+plot(real(NFFT1EdgeCanon));
+legend('Real')
+title('FFT1EdgeCanon - Normerad')
+subplot(1,3,3);
+plot(imag(NFFT1EdgeCanon));
+legend('Imag')
+
+figure;
+subplot(1,3,1);
+plot(abs(NFFT1EdgeScanner));
+legend('Abs')
+subplot(1,3,2);
+plot(real(NFFT1EdgeScanner));
+legend('Real')
+title('FFT1EdgeScanner - Normerad')
+subplot(1,3,3);
+plot(imag(NFFT1EdgeScanner));
+legend('Imag')
+
+figure;
+subplot(1,3,1);
+plot(abs(NFFT1EdgeSony));
+legend('Abs')
+subplot(1,3,2);
+plot(real(NFFT1EdgeSony));
+legend('Real')
+title('FFT1EdgeSony - Normerad')
+subplot(1,3,3);
+plot(imag(NFFT1EdgeSony));
+legend('Imag')
 
 
 
