@@ -52,7 +52,7 @@ end
 subplot(2,1,1);
 plot(norm_average(:,1));
 title('Holga lens');
-%xlabel('radius');ylabel('intensity');
+ylabel('intensity');
 subplot(2,1,2);
 plot(norm_average(:,2));
 title('Canon lens');
