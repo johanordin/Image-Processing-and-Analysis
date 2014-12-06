@@ -2,6 +2,7 @@
 % Christoffer Engelbrektsson & Johan Nordin
 % MT3
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%Part 1: Vignette and uneven illumination
 %% A
 
@@ -39,8 +40,7 @@ for i=1:2
         % Sum the pixelvalues for each m in QR
         sum_pv = sum(sum(Maskm.*pictures(:,:,:,i)));
 
-        % Count the number of elements of m in QR // samma sak som sum(sum(QR
-        % == 1)) //
+        % Count the number of elements of m in QR 
         nr_objects = sum(sum(Maskm));
 
         average(m,i) = sum_pv/nr_objects;
@@ -52,14 +52,14 @@ end
 subplot(2,1,1);
 plot(norm_average(:,1));
 title('Holga lens');
-%xlabel('radius');ylabel('intensity');
+%xlabel('radius');
+ylabel('intensity');
 subplot(2,1,2);
 plot(norm_average(:,2));
 title('Canon lens');
 xlabel('radius');ylabel('intensity');
 
-
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Part 2: Correlation 
 
 redEyes = im2double(imread('BoldRedEye.JPG'));
@@ -94,7 +94,7 @@ BW = ratio.*imregionalmax(ratio);
 imshow(BW)
 imshowpair(BW, redEyes)
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Part 3: Registration
 Gim = im2double(imread('GCPins512.jpg'));
 Him = im2double(imread('GHPins512.jpg'));
