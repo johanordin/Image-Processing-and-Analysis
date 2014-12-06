@@ -1,8 +1,6 @@
-%% TNM087 - Labb 1 
+%% TNM087 - Labb 2: Operations in the image domain
 % Christoffer Engelbrektsson & Johan Nordin
 % MT3
-
-%%Lab 2: Operations in the image domain
 
 %%Part 1: Vignette and uneven illumination
 %% A
@@ -26,7 +24,6 @@ imshow(R, []);
 
 %% B
 
-SR = R;
 SR = R ./ R(512/2-1,1);
 
 QR = round((SR*100));
@@ -97,12 +94,6 @@ BW = ratio.*imregionalmax(ratio);
 imshow(BW)
 imshowpair(BW, redEyes)
 
-% Bonus part
-
-% BWinv = BW < 0.5;
-% redEyes(:,:,1) = BWinv .* redChannel;
-% 
-% imshow(redEyes)
 
 %% Part 3: Registration
 Gim = im2double(imread('GCPins512.jpg'));
@@ -111,7 +102,6 @@ Him = im2double(imread('GHPins512.jpg'));
 % Minsta antalet punkter som kravs for att rotera, skala och translatera.
 M = 3;
 k = 1:3;
-
 numstr_1 = {'G1','G2','G3'};
 imshow(Gim);
 
@@ -154,7 +144,7 @@ A = GC1 \ HC1  ;
 %A = mldivide(HC1,GC1);
 
 % Create a meshgrid
-[X Y] = meshgrid(1:500, 1:512);
+[X, Y] = meshgrid(1:500, 1:512);
 
 % transform the coordinates
 new = [X(:), Y(:), ones(256000,1) ]*A;
