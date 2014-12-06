@@ -31,8 +31,8 @@ SR = R ./ R(512/2-1,1);
 
 QR = round((SR*100));
 
-average = zeros(141,2);
-norm_average = zeros(141,2);
+average = zeros(100,2);
+norm_average = zeros(100,2);
  
 for i=1:2
     for m=1:100
@@ -51,12 +51,16 @@ for i=1:2
     norm_average(:,i) = average(:,i) / max(average(:,i));
 end
 
+% Plot the images 
 subplot(2,1,1);
 plot(norm_average(:,1));
+title('Holga lens');
+%xlabel('radius');ylabel('intensity');
 subplot(2,1,2);
 plot(norm_average(:,2));
+title('Canon lens');
+xlabel('radius');ylabel('intensity');
 
-%pictures(:,:,:,2)
 
 
 %% Part 2: Correlation 
@@ -180,44 +184,6 @@ imshowpair(Gim, B);
 % 
 % imshowpair(Him, cb_rgb);
 
-% newPic = Gim*0;
-% 
-% coord = [0 0 0]';
-% newcoord = [0 0 0]';
-
-% for col=1:(size(Gim,2))
-%     for row=1:(size(Gim,1))
-%         coord = [0 0 0]';
-%         newcoord = [0 0 0]';
-%         
-%         coord(1) = row;
-%         coord(2) = col;
-%         
-%         newcoord = A*coord;
-%         newcoord = ceil(newcoord);
-%         
-%         % eventuell funktion for att interpolera icke existerande
-%         % koordinater
-%         % interp2 
-%         
-%         
-%         if (newcoord(2) <= 0)
-%             disp(newcoord(2));
-%             newcoord(2) = 1;
-%         end
-%         if (newcoord(1) <= 0)
-%             disp(newcoord(1));
-%             newcoord(1) = 1;
-%         end
-%         
-% %         disp(newcoord);
-% %         pause(0.5);
-%         
-%         newPic(newcoord(1), newcoord(2)) = Gim(row, col);
-%         
-%     end
-% end
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % forsoker loopa med ett linjart index
 % ska en kolumn vektor
@@ -270,10 +236,3 @@ imshowpair(Gim, B);
 % figure;
 % imshowpair(Him, result);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%
-
-
-
-
-
-
