@@ -35,10 +35,10 @@ pictures(:,:,:,4) = pictures(:,:,:,4)/ max(max(pictures(:,:,:,4)));
 
 %% B
 
-EdgeHolga = pictures(:,103:153,:,1);
-EdgeCanon = pictures(:,103:153,:,2);
-EdgeScanner = pictures(:,103:153,:,3);
-EdgeSony =  pictures(:,103:153,:,4);
+EdgeHolga = pictures(1:51,:,:,1);
+EdgeCanon = pictures(1:51,:,:,2);
+EdgeScanner = pictures(1:51,:,:,3);
+EdgeSony =  pictures(1:51,:,:,4);
 
 %% B-plot
 
@@ -56,13 +56,13 @@ imshow(EdgeSony);
 %% C
 
 % sum 
-SumEdgeHolga = sum(EdgeHolga, 2)';
-SumEdgeCanon = sum(EdgeCanon, 2)';
-SumEdgeScanner = sum(EdgeScanner, 2)';
-SumEdgeSony = sum(EdgeSony, 2)';
+SumEdgeHolga = sum(EdgeHolga, 1);
+SumEdgeCanon = sum(EdgeCanon, 1);
+SumEdgeScanner = sum(EdgeScanner, 1);
+SumEdgeSony = sum(EdgeSony, 1);
 
 % Zero padding 
-Z = zeros(12,1)';
+Z = zeros(1,12);
 
 SumEdgeHolgaZeroPad = cat(2, Z, SumEdgeHolga, Z);
 SumEdgeCanonZeroPad = cat(2, Z, SumEdgeCanon, Z);
@@ -199,7 +199,43 @@ legend('Imag')
 
 %% G
 
+% Viktfunktion
+% weigth = logspace(0,1,280);
+% 
+% 
+% 
+% 
+% % absolutbelopp av normaliserad fouriertransform ()
+% absnor = abs((fft(SumEdgeHolgaZeroPad))/ (max(fft(SumEdgeHolgaZeroPad))));
+% 
+% g = weigth.*absnor;
+% 
+% 
+% plot((fftshift(g)))
+
+%
+%
+
+a =linspace(1,0,140);
+b =linspace(0,1,140);
+w = cat(2,a,b);
+
+r = abs(NFFT1EdgeHolga).*w;
+r1 = abs(NFFT1EdgeCanon).*w;
+r2 = abs(NFFT1EdgeScanner).*w;
+r3 = abs(NFFT1EdgeSony).*w;
+
+plot(r);figure;
+plot(r1)
+
+
+
+
 %% H
+
+pictures(:,:,:,1)
+
+
 
 %% I
 
