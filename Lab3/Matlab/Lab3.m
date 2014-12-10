@@ -200,50 +200,150 @@ legend('Imag')
 %% G
 
 % Viktfunktion
-% weigth = logspace(0,1,280);
-% 
-% 
-% 
-% 
-% % absolutbelopp av normaliserad fouriertransform ()
-% absnor = abs((fft(SumEdgeHolgaZeroPad))/ (max(fft(SumEdgeHolgaZeroPad))));
-% 
-% g = weigth.*absnor;
-% 
-% 
-% plot((fftshift(g)))
-
-%
-%
-
 a =linspace(1,0,140);
 b =linspace(0,1,140);
 w = cat(2,a,b);
 
-r = abs(NFFT1EdgeHolga).*w;
-r1 = abs(NFFT1EdgeCanon).*w;
-r2 = abs(NFFT1EdgeScanner).*w;
-r3 = abs(NFFT1EdgeSony).*w;
+% Multiplicerar viktfunktionen med absolutbeloppet av skiftade
+% fouriertransformen
 
-plot(r);figure;
-plot(r1)
+weightHolga = abs(NFFT1EdgeHolga).*w;
+weightCanon = abs(NFFT1EdgeCanon).*w;
+weightScanner = abs(NFFT1EdgeScanner).*w;
+weightSony = abs(NFFT1EdgeSony).*w;
 
-
+sharpHolga = sum(weightHolga)
+sharpCanon = sum(weightCanon)
+sharpScanner = sum(weightScanner)
+sharpSony = sum(weightSony)
 
 
 %% H
 
-pictures(:,:,:,1)
+% Adds padding aound the image
+EdgeHolga2      = padarray(pictures(:,:,:,1),[128 128],0,'both');
+EdgeCanon2      = padarray(pictures(:,:,:,2),[128 128],0,'both');
+EdgeScanner2    = padarray(pictures(:,:,:,3),[128 128],0,'both');
+EdgeSony2       = padarray(pictures(:,:,:,4),[128 128],0,'both');
+
+
+% Compute fourier transform and shift
+FFTEdgeHolga2 = fftshift(fft2(EdgeHolga2));
+FFTEdgeCanon2 = fftshift(fft2(EdgeCanon2));
+FFTEdgeScanner2 = fftshift(fft2(EdgeScanner2));
+FFTEdgeSony2 = fftshift(fft2(EdgeSony2));
 
 
 
 %% I
 
+% Calculate abs of the images
+AHolga = abs(FFTEdgeHolga2);
+ACanon = abs(FFTEdgeCanon2);
+AScanner = abs(FFTEdgeScanner2);
+ASony = abs(FFTEdgeSony2);
+
+HolgaDC = AHolga/AHolga(257,257); 
+CanonDC = ACanon/ACanon(257,257);
+ScannerDC = AScanner/AScanner(257,257);
+SonyDC = ASony/ASony(257,257);
+
+% % % normalisera --> fel
+% % 
+% % HolgaDC = HolgaDC/ (max(max(HolgaDC)));
+% % CanonDC = CanonDC/ (max(max(CanonDC)));
+% % ScannerDC = ScannerDC/ (max(max(ScannerDC)));
+% % SonyDC = SonyDC/ (max(max(SonyDC)));
+% % 
+
 %% J
+
+plot(HolgaDC(257,:));
+figure;
+plot(CanonDC(257,:));
+figure;
+plot(ScannerDC(257,:));
+figure;
+plot(SonyDC(257,:));
+
 
 %% K
 
+N = 512;
+[X,Y] = meshgrid((1:N));
+[T,R] = cart2pol(X-N/2,Y-N/2);
+
+SR = R ./ R(512/2-1,1);
+
+QR = round((SR*100));
+
+average = zeros(100,1);
+average2 = zeros(100,1);
+average3 = zeros(100,1);
+average4 = zeros(100,1);
+
+norm_average = zeros(100,1);
+norm_average2 = zeros(100,1);
+norm_average3 = zeros(100,1);
+norm_average4 = zeros(100,1);
+ 
+
+for m=1:100
+    % Create logical matrix Maskm for each value m
+    Maskm = QR == m;
+
+    % Sum the pixelvalues for each m in QR
+    sum_pv = sum(sum(Maskm.*HolgaDC));
+    sum_pv1 = sum(sum(Maskm.*CanonDC));
+    sum_pv2 = sum(sum(Maskm.*ScannerDC));
+    sum_pv3 = sum(sum(Maskm.*SonyDC));
+    
+    % Count the number of elements of m in QR 
+    nr_objects = sum(sum(Maskm));
+
+    average(m) = sum_pv/nr_objects;
+    average2(m) = sum_pv1/nr_objects;
+    average3(m) = sum_pv2/nr_objects;
+    average4(m) = sum_pv3/nr_objects;
+
+end
+
+norm_average = average / max(average);
+norm_average2 = average2 / max(average2);
+norm_average3 = average3 / max(average3);
+norm_average4 = average4 / max(average4);
+
+plot(norm_average)
+figure;imshow(HolgaDC)
+
+figure;plot(norm_average2)
+figure;imshow(CanonDC)
+
+figure;plot(norm_average3)
+figure;imshow(ScannerDC)
+
+figure;plot(norm_average4)
+figure;imshow(SonyDC)
 %% L
+
+
+% Viktfunktion
+a =linspace(1,0,50);
+b =linspace(0,1,50);
+w = cat(2,a,b);
+
+% Multiplicerar viktfunktionen med absolutbeloppet av skiftade
+% fouriertransformen
+
+weightHolga = w'.*abs(norm_average);
+weightCanon = w'.*abs(norm_average2);
+weightScanner = w'.*abs(norm_average3);
+weightSony = w'.*abs(norm_average4);
+
+sharpHolga = sum(weightHolga)
+sharpCanon = sum(weightCanon)
+sharpScanner = sum(weightScanner)
+sharpSony = sum(weightSony)
 
 
 
