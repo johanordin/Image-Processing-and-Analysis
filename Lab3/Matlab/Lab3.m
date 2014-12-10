@@ -345,6 +345,41 @@ sharpCanon = sum(weightCanon)
 sharpScanner = sum(weightScanner)
 sharpSony = sum(weightSony)
 
+%%
+
+load('winsuint8.mat');
+
+sharpness = zeros(192);
+
+
+N = 64;
+[X,Y] = meshgrid((1:N));
+[T,R] = cart2pol(X-N/2,Y-N/2);
+
+
+
+for i = 1:192
+    
+   % Adds padding aound the image
+   patch = padarray(winsuint8(:,:,i),[16 16],0,'both');
+   
+   FFTpatch = abs(fftshift(fft2(patch)));
+   
+   FFTpatchDC =  FFTpatch / (FFTpatch(33,33));
+   
+   sharpness(i) = sum(sum(FFTpatchDC.*R));
+   
+   
+%    imshow(FFTpatchDC);
+%    pause(5);
+   
+   
+   
+    
+end
+
+plot(sharpness)
+
 
 
 
