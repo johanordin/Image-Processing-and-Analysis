@@ -13,25 +13,12 @@ pictures(:,:,:,2) = rgb2gray(im2double(imread('HalfCanon.jpg')));
 pictures(:,:,:,3) = rgb2gray(im2double(imread('HalfSony.jpg')));
 pictures(:,:,:,4) = rgb2gray(im2double(imread('HalfScanner.jpg')));
 
-% % Plot the images
-% subplot(1,4,1);
-% imshow(pictures(:,:,:,1));
-% subplot(1,4,2);
-% imshow(pictures(:,:,:,2));
-% subplot(1,4,3);
-% imshow(pictures(:,:,:,3));
-% subplot(1,4,4);
-% imshow(pictures(:,:,:,4));
-
-
 % Normalize the images
 pictures(:,:,:,1) = pictures(:,:,:,1)/ max(max(pictures(:,:,:,1)));
 pictures(:,:,:,2) = pictures(:,:,:,2)/ max(max(pictures(:,:,:,2)));
 pictures(:,:,:,3) = pictures(:,:,:,3)/ max(max(pictures(:,:,:,3)));
 pictures(:,:,:,4) = pictures(:,:,:,4)/ max(max(pictures(:,:,:,4)));
 
-% figure;
-% %montage(pictures)
 
 %% B
 
@@ -40,10 +27,10 @@ EdgeCanon = pictures(1:51,:,:,2);
 EdgeScanner = pictures(1:51,:,:,3);
 EdgeSony =  pictures(1:51,:,:,4);
 
+
 %% B-plot
 
 figure;
-%montage(EdgeHolga, EdgeCanon, EdgeScanner, EdgeSony);
 subplot(1,4,1);
 imshow(EdgeHolga);
 subplot(1,4,2);
@@ -76,8 +63,6 @@ FFT1EdgeHolga = fftshift(fft(SumEdgeHolgaZeroPad));
 FFT1EdgeCanon = fftshift(fft(SumEdgeCanonZeroPad));
 FFT1EdgeScanner = fftshift(fft(SumEdgeScannerZeroPad));
 FFT1EdgeSony = fftshift(fft(SumEdgeSonyZeroPad));
-
-
 
 
 %% D-plot
@@ -212,10 +197,14 @@ weightCanon = abs(NFFT1EdgeCanon).*w;
 weightScanner = abs(NFFT1EdgeScanner).*w;
 weightSony = abs(NFFT1EdgeSony).*w;
 
-sharpHolga = sum(weightHolga)
-sharpCanon = sum(weightCanon)
-sharpScanner = sum(weightScanner)
-sharpSony = sum(weightSony)
+disp('Sharpness of Holga:')
+sum(weightHolga)
+disp('Sharpness of Canon:')
+sum(weightCanon)
+disp('Sharpness of Scanner:')
+sum(weightScanner)
+disp('Sharpness of Sony:')
+sum(weightSony)
 
 
 %% H
@@ -226,13 +215,11 @@ EdgeCanon2      = padarray(pictures(:,:,:,2),[128 128],0,'both');
 EdgeScanner2    = padarray(pictures(:,:,:,3),[128 128],0,'both');
 EdgeSony2       = padarray(pictures(:,:,:,4),[128 128],0,'both');
 
-
 % Compute fourier transform and shift
 FFTEdgeHolga2 = fftshift(fft2(EdgeHolga2));
 FFTEdgeCanon2 = fftshift(fft2(EdgeCanon2));
 FFTEdgeScanner2 = fftshift(fft2(EdgeScanner2));
 FFTEdgeSony2 = fftshift(fft2(EdgeSony2));
-
 
 
 %% I
@@ -248,13 +235,6 @@ CanonDC = ACanon/ACanon(257,257);
 ScannerDC = AScanner/AScanner(257,257);
 SonyDC = ASony/ASony(257,257);
 
-% % % normalisera --> fel
-% % 
-% % HolgaDC = HolgaDC/ (max(max(HolgaDC)));
-% % CanonDC = CanonDC/ (max(max(CanonDC)));
-% % ScannerDC = ScannerDC/ (max(max(ScannerDC)));
-% % SonyDC = SonyDC/ (max(max(SonyDC)));
-% % 
 
 %% J
 
@@ -277,55 +257,56 @@ SR = R ./ R(512/2-1,1);
 
 QR = round((SR*100));
 
-average = zeros(100,1);
-average2 = zeros(100,1);
-average3 = zeros(100,1);
-average4 = zeros(100,1);
+average_Holga = zeros(100,1);
+average_Canon = zeros(100,1);
+average_Scanner = zeros(100,1);
+average_Sony = zeros(100,1);
 
-norm_average = zeros(100,1);
-norm_average2 = zeros(100,1);
-norm_average3 = zeros(100,1);
-norm_average4 = zeros(100,1);
  
-
 for m=1:100
     % Create logical matrix Maskm for each value m
     Maskm = QR == m;
 
     % Sum the pixelvalues for each m in QR
-    sum_pv = sum(sum(Maskm.*HolgaDC));
-    sum_pv1 = sum(sum(Maskm.*CanonDC));
-    sum_pv2 = sum(sum(Maskm.*ScannerDC));
-    sum_pv3 = sum(sum(Maskm.*SonyDC));
+    sum_Holga = sum(sum(Maskm.*HolgaDC));
+    sum_Canon = sum(sum(Maskm.*CanonDC));
+    sum_Scanner = sum(sum(Maskm.*ScannerDC));
+    sum_Sony = sum(sum(Maskm.*SonyDC));
     
     % Count the number of elements of m in QR 
     nr_objects = sum(sum(Maskm));
 
-    average(m) = sum_pv/nr_objects;
-    average2(m) = sum_pv1/nr_objects;
-    average3(m) = sum_pv2/nr_objects;
-    average4(m) = sum_pv3/nr_objects;
+    average_Holga(m) = sum_Holga/nr_objects;
+    average_Canon(m) = sum_Canon/nr_objects;
+    average_Scanner(m) = sum_Scanner/nr_objects;
+    average_Sony(m) = sum_Sony/nr_objects;
 
 end
 
-norm_average = average / max(average);
-norm_average2 = average2 / max(average2);
-norm_average3 = average3 / max(average3);
-norm_average4 = average4 / max(average4);
+norm_average_Holga = average_Holga / max(average_Holga);
+norm_average_Canon = average_Canon / max(average_Canon);
+norm_average_Scanner = average_Scanner / max(average_Scanner);
+norm_average_Sony = average_Sony / max(average_Sony);
 
-plot(norm_average)
-figure;imshow(HolgaDC)
+%% K-plot
 
-figure;plot(norm_average2)
-figure;imshow(CanonDC)
+plot(norm_average_Holga)
+title('Holga')
 
-figure;plot(norm_average3)
-figure;imshow(ScannerDC)
+figure;
+plot(norm_average_Canon)
+title('Canon')
 
-figure;plot(norm_average4)
-figure;imshow(SonyDC)
+figure;
+plot(norm_average_Scanner)
+title('Scanner')
+
+figure;
+plot(norm_average_Sony)
+title('Sony')
+
+
 %% L
-
 
 % Viktfunktion
 a =linspace(1,0,50);
@@ -335,28 +316,32 @@ w = cat(2,a,b);
 % Multiplicerar viktfunktionen med absolutbeloppet av skiftade
 % fouriertransformen
 
-weightHolga = w'.*abs(norm_average);
-weightCanon = w'.*abs(norm_average2);
-weightScanner = w'.*abs(norm_average3);
-weightSony = w'.*abs(norm_average4);
+weightHolga = w'.*abs(norm_average_Holga);
+weightCanon = w'.*abs(norm_average_Canon);
+weightScanner = w'.*abs(norm_average_Scanner);
+weightSony = w'.*abs(norm_average_Sony);
 
-sharpHolga = sum(weightHolga)
-sharpCanon = sum(weightCanon)
-sharpScanner = sum(weightScanner)
-sharpSony = sum(weightSony)
+disp('Sharpness of Holga:')
+sum(weightHolga)
+disp('Sharpness of Canon:')
+sum(weightCanon)
+disp('Sharpness of Scanner:')
+sum(weightScanner)
+disp('Sharpness of Sony:')
+sum(weightSony)
 
-%%
+
+%% Part 2: Autofocus with Fourier Transforms
+
+%% A and B
 
 load('winsuint8.mat');
 
 sharpness = zeros(192);
 
-
 N = 64;
 [X,Y] = meshgrid((1:N));
 [T,R] = cart2pol(X-N/2,Y-N/2);
-
-
 
 for i = 1:192
     
@@ -368,28 +353,12 @@ for i = 1:192
    FFTpatchDC =  FFTpatch / (FFTpatch(33,33));
    
    sharpness(i) = sum(sum(FFTpatchDC.*R));
-   
-   
-%    imshow(FFTpatchDC);
-%    pause(5);
-   
-   
-   
     
 end
 
 plot(sharpness)
 
-
-
-
-
-
-
-
-
-
-
-
+disp('Sharpest images is:')
+find(sharpness == max(sharpness(:)))
 
 
