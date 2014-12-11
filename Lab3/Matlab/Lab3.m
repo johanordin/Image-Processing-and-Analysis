@@ -357,6 +357,8 @@ for i = 1:192
 end
 
 plot(sharpness)
+xlabel('Bilder')
+ylabel('Skärpa')
 
 disp('Sharpest images is:')
 find(sharpness == max(sharpness(:)))
