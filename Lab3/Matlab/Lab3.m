@@ -7,25 +7,25 @@
 %% Part 1: Comparison of different optical systems
 
 %% A
-
-pictures(:,:,:,1) = rgb2gray(im2double(imread('HalfHolga.jpg')));
-pictures(:,:,:,2) = rgb2gray(im2double(imread('HalfCanon.jpg')));
-pictures(:,:,:,3) = rgb2gray(im2double(imread('HalfSony.jpg')));
-pictures(:,:,:,4) = rgb2gray(im2double(imread('HalfScanner.jpg')));
+% Ghorde dem till 3D
+pictures(:,:,1) = rgb2gray(im2double(imread('HalfHolga.jpg')));
+pictures(:,:,2) = rgb2gray(im2double(imread('HalfCanon.jpg')));
+pictures(:,:,3) = rgb2gray(im2double(imread('HalfSony.jpg')));
+pictures(:,:,4) = rgb2gray(im2double(imread('HalfScanner.jpg')));
 
 % Normalize the images
-pictures(:,:,:,1) = pictures(:,:,:,1)/ max(max(pictures(:,:,:,1)));
-pictures(:,:,:,2) = pictures(:,:,:,2)/ max(max(pictures(:,:,:,2)));
-pictures(:,:,:,3) = pictures(:,:,:,3)/ max(max(pictures(:,:,:,3)));
-pictures(:,:,:,4) = pictures(:,:,:,4)/ max(max(pictures(:,:,:,4)));
+pictures(:,:,1) = pictures(:,:,1)/ max(max(pictures(:,:,1)));
+pictures(:,:,2) = pictures(:,:,2)/ max(max(pictures(:,:,2)));
+pictures(:,:,3) = pictures(:,:,3)/ max(max(pictures(:,:,3)));
+pictures(:,:,4) = pictures(:,:,4)/ max(max(pictures(:,:,4)));
 
 
 %% B
 
-EdgeHolga = pictures(1:51,:,:,1);
-EdgeCanon = pictures(1:51,:,:,2);
-EdgeScanner = pictures(1:51,:,:,3);
-EdgeSony =  pictures(1:51,:,:,4);
+EdgeHolga = pictures(1:51,:,1);
+EdgeCanon = pictures(1:51,:,2);
+EdgeScanner = pictures(1:51,:,3);
+EdgeSony =  pictures(1:51,:,4);
 
 
 %% B-plot
@@ -48,13 +48,14 @@ SumEdgeCanon = sum(EdgeCanon, 1);
 SumEdgeScanner = sum(EdgeScanner, 1);
 SumEdgeSony = sum(EdgeSony, 1);
 
-% Zero padding 
-Z = zeros(1,12);
+% Används för att inte ligga till nya rader
+Dimension = [0 1];
 
-SumEdgeHolgaZeroPad = cat(2, Z, SumEdgeHolga, Z);
-SumEdgeCanonZeroPad = cat(2, Z, SumEdgeCanon, Z);
-SumEdgeScannerZeroPad = cat(2, Z, SumEdgeScanner, Z);
-SumEdgeSonyZeroPad = cat(2, Z, SumEdgeSony, Z);
+SumEdgeHolgaZeroPad = padarray(SumEdgeHolga,12*Dimension,0);
+SumEdgeCanonZeroPad = padarray(SumEdgeHolga,12*Dimension,0);
+SumEdgeScannerZeroPad = padarray(SumEdgeHolga,12*Dimension,0);
+SumEdgeSonyZeroPad = padarray(SumEdgeHolga,12*Dimension,0);
+
 
 %% D
 
@@ -125,60 +126,61 @@ legend('Imag')
 
 % Varför är detta användbart?
 
-NFFT1EdgeHolga = FFT1EdgeHolga/max(FFT1EdgeHolga);
-NFFT1EdgeCanon = FFT1EdgeCanon/max(FFT1EdgeCanon);
-NFFT1EdgeScanner = FFT1EdgeScanner/max(FFT1EdgeScanner);
-NFFT1EdgeSony = FFT1EdgeSony/max(FFT1EdgeSony);
+% Lade till abs
+NFFT1EdgeHolga = abs(FFT1EdgeHolga)/max(abs(FFT1EdgeHolga));
+NFFT1EdgeCanon = abs(FFT1EdgeCanon)/max(abs(FFT1EdgeCanon));
+NFFT1EdgeScanner = abs(FFT1EdgeScanner)/max(abs(FFT1EdgeScanner));
+NFFT1EdgeSony = abs(FFT1EdgeSony)/max(abs(FFT1EdgeSony));
 
 %% F-plot
 
-figure;
-subplot(1,3,1);
-plot(abs(NFFT1EdgeHolga));
-legend('Abs')
-subplot(1,3,2);
-plot(real(NFFT1EdgeHolga));
-legend('Real')
-title('FFT1EdgeHolga - Normerad')
-subplot(1,3,3);
-plot(imag(NFFT1EdgeHolga));
-legend('Imag')
-
-figure;
-subplot(1,3,1);
-plot(abs(NFFT1EdgeCanon));
-legend('Abs')
-subplot(1,3,2);
-plot(real(NFFT1EdgeCanon));
-legend('Real')
-title('FFT1EdgeCanon - Normerad')
-subplot(1,3,3);
-plot(imag(NFFT1EdgeCanon));
-legend('Imag')
-
-figure;
-subplot(1,3,1);
-plot(abs(NFFT1EdgeScanner));
-legend('Abs')
-subplot(1,3,2);
-plot(real(NFFT1EdgeScanner));
-legend('Real')
-title('FFT1EdgeScanner - Normerad')
-subplot(1,3,3);
-plot(imag(NFFT1EdgeScanner));
-legend('Imag')
-
-figure;
-subplot(1,3,1);
-plot(abs(NFFT1EdgeSony));
-legend('Abs')
-subplot(1,3,2);
-plot(real(NFFT1EdgeSony));
-legend('Real')
-title('FFT1EdgeSony - Normerad')
-subplot(1,3,3);
-plot(imag(NFFT1EdgeSony));
-legend('Imag')
+% figure;
+% subplot(1,3,1);
+% plot(abs(NFFT1EdgeHolga));
+% legend('Abs')
+% subplot(1,3,2);
+% plot(real(NFFT1EdgeHolga));
+% legend('Real')
+% title('FFT1EdgeHolga - Normerad')
+% subplot(1,3,3);
+% plot(imag(NFFT1EdgeHolga));
+% legend('Imag')
+% 
+% figure;
+% subplot(1,3,1);
+% plot(abs(NFFT1EdgeCanon));
+% legend('Abs')
+% subplot(1,3,2);
+% plot(real(NFFT1EdgeCanon));
+% legend('Real')
+% title('FFT1EdgeCanon - Normerad')
+% subplot(1,3,3);
+% plot(imag(NFFT1EdgeCanon));
+% legend('Imag')
+% 
+% figure;
+% subplot(1,3,1);
+% plot(abs(NFFT1EdgeScanner));
+% legend('Abs')
+% subplot(1,3,2);
+% plot(real(NFFT1EdgeScanner));
+% legend('Real')
+% title('FFT1EdgeScanner - Normerad')
+% subplot(1,3,3);
+% plot(imag(NFFT1EdgeScanner));
+% legend('Imag')
+% 
+% figure;
+% subplot(1,3,1);
+% plot(abs(NFFT1EdgeSony));
+% legend('Abs')
+% subplot(1,3,2);
+% plot(real(NFFT1EdgeSony));
+% legend('Real')
+% title('FFT1EdgeSony - Normerad')
+% subplot(1,3,3);
+% plot(imag(NFFT1EdgeSony));
+% legend('Imag')
 
 
 
@@ -186,16 +188,17 @@ legend('Imag')
 
 % Viktfunktion
 a =linspace(1,0,140);
-b =linspace(0,1,140);
-w = cat(2,a,b);
+b =linspace(0,1,141);
+w = cat(2,a,b(2:141));
 
 % Multiplicerar viktfunktionen med absolutbeloppet av skiftade
 % fouriertransformen
 
-weightHolga = abs(NFFT1EdgeHolga).*w;
-weightCanon = abs(NFFT1EdgeCanon).*w;
-weightScanner = abs(NFFT1EdgeScanner).*w;
-weightSony = abs(NFFT1EdgeSony).*w;
+% Tog bort abs för det finns tidigare nu
+weightHolga = NFFT1EdgeHolga.*w;
+weightCanon = NFFT1EdgeCanon.*w;
+weightScanner = NFFT1EdgeScanner.*w;
+weightSony = NFFT1EdgeSony.*w;
 
 disp('Sharpness of Holga:')
 sum(weightHolga)
@@ -280,7 +283,6 @@ for m=1:100
     average_Canon(m) = sum_Canon/nr_objects;
     average_Scanner(m) = sum_Scanner/nr_objects;
     average_Sony(m) = sum_Sony/nr_objects;
-
 end
 
 norm_average_Holga = average_Holga / max(average_Holga);
@@ -351,6 +353,8 @@ for i = 1:192
    FFTpatch = abs(fftshift(fft2(patch)));
    
    FFTpatchDC =  FFTpatch / (FFTpatch(33,33));
+   
+   
    
    sharpness(i) = sum(sum(FFTpatchDC.*R));
     
