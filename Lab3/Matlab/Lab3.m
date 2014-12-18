@@ -7,7 +7,7 @@
 %% Part 1: Comparison of different optical systems
 
 %% A
-% Ghorde dem till 3D
+% Gjorde dem till 3D
 pictures(:,:,1) = rgb2gray(im2double(imread('HalfHolga.jpg')));
 pictures(:,:,2) = rgb2gray(im2double(imread('HalfCanon.jpg')));
 pictures(:,:,3) = rgb2gray(im2double(imread('HalfSony.jpg')));
@@ -48,7 +48,7 @@ SumEdgeCanon = sum(EdgeCanon, 1);
 SumEdgeScanner = sum(EdgeScanner, 1);
 SumEdgeSony = sum(EdgeSony, 1);
 
-% Används för att inte ligga till nya rader
+% Anvands for att inte ligga till nya rader
 Dimension = [0 1];
 
 SumEdgeHolgaZeroPad = padarray(SumEdgeHolga,12*Dimension,0);
@@ -119,12 +119,12 @@ legend('Imag')
 
 %% E
 
-% DC komponenten är impulsen som sker vid frekvensen 0
+% DC komponenten ar impulsen som sker vid frekvensen 0
 
 
 %% F
 
-% Varför är detta användbart?
+% Varfor ar detta anvandbart?
 
 % Lade till abs
 NFFT1EdgeHolga = abs(FFT1EdgeHolga)/max(abs(FFT1EdgeHolga));
@@ -194,7 +194,7 @@ w = cat(2,a,b(2:141));
 % Multiplicerar viktfunktionen med absolutbeloppet av skiftade
 % fouriertransformen
 
-% Tog bort abs för det finns tidigare nu
+% Tog bort abs f?r det finns tidigare nu
 weightHolga = NFFT1EdgeHolga.*w;
 weightCanon = NFFT1EdgeCanon.*w;
 weightScanner = NFFT1EdgeScanner.*w;
@@ -213,30 +213,24 @@ sum(weightSony)
 %% H
 
 % Adds padding aound the image
-EdgeHolga2      = padarray(pictures(:,:,:,1),[128 128],0,'both');
-EdgeCanon2      = padarray(pictures(:,:,:,2),[128 128],0,'both');
-EdgeScanner2    = padarray(pictures(:,:,:,3),[128 128],0,'both');
-EdgeSony2       = padarray(pictures(:,:,:,4),[128 128],0,'both');
+EdgeHolga2      = padarray(pictures(:,:,1),[128 128],0,'both');
+EdgeCanon2      = padarray(pictures(:,:,2),[128 128],0,'both');
+EdgeScanner2    = padarray(pictures(:,:,3),[128 128],0,'both');
+EdgeSony2       = padarray(pictures(:,:,4),[128 128],0,'both');
 
 % Compute fourier transform and shift
-FFTEdgeHolga2 = fftshift(fft2(EdgeHolga2));
-FFTEdgeCanon2 = fftshift(fft2(EdgeCanon2));
-FFTEdgeScanner2 = fftshift(fft2(EdgeScanner2));
-FFTEdgeSony2 = fftshift(fft2(EdgeSony2));
+FFTEdgeHolga2 = abs(fftshift(fft2(EdgeHolga2)));
+FFTEdgeCanon2 = abs(fftshift(fft2(EdgeCanon2)));
+FFTEdgeScanner2 = abs(fftshift(fft2(EdgeScanner2)));
+FFTEdgeSony2 = abs(fftshift(fft2(EdgeSony2)));
 
 
 %% I
 
-% Calculate abs of the images
-AHolga = abs(FFTEdgeHolga2);
-ACanon = abs(FFTEdgeCanon2);
-AScanner = abs(FFTEdgeScanner2);
-ASony = abs(FFTEdgeSony2);
-
-HolgaDC = AHolga/AHolga(257,257); 
-CanonDC = ACanon/ACanon(257,257);
-ScannerDC = AScanner/AScanner(257,257);
-SonyDC = ASony/ASony(257,257);
+HolgaDC = FFTEdgeHolga2/FFTEdgeHolga2(257,257); 
+CanonDC = FFTEdgeCanon2/FFTEdgeCanon2(257,257);
+ScannerDC = FFTEdgeScanner2/FFTEdgeScanner2(257,257);
+SonyDC = FFTEdgeSony2/FFTEdgeSony2(257,257);
 
 
 %% J
@@ -248,7 +242,6 @@ figure;
 plot(ScannerDC(257,:));
 figure;
 plot(SonyDC(257,:));
-
 
 %% K
 
@@ -362,7 +355,7 @@ end
 
 plot(sharpness)
 xlabel('Bilder')
-ylabel('Skärpa')
+ylabel('Skarpa')
 
 disp('Sharpest images is:')
 find(sharpness == max(sharpness(:)))
