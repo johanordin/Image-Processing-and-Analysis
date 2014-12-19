@@ -51,10 +51,11 @@ SumEdgeSony = sum(EdgeSony, 1);
 % Anvands for att inte ligga till nya rader
 Dimension = [0 1];
 
+% 
 SumEdgeHolgaZeroPad = padarray(SumEdgeHolga,12*Dimension,0);
-SumEdgeCanonZeroPad = padarray(SumEdgeHolga,12*Dimension,0);
-SumEdgeScannerZeroPad = padarray(SumEdgeHolga,12*Dimension,0);
-SumEdgeSonyZeroPad = padarray(SumEdgeHolga,12*Dimension,0);
+SumEdgeCanonZeroPad = padarray(SumEdgeCanon,12*Dimension,0);
+SumEdgeScannerZeroPad = padarray(SumEdgeScanner,12*Dimension,0);
+SumEdgeSonyZeroPad = padarray(SumEdgeSony,12*Dimension,0);
 
 
 %% D
@@ -131,57 +132,6 @@ NFFT1EdgeHolga = abs(FFT1EdgeHolga)/max(abs(FFT1EdgeHolga));
 NFFT1EdgeCanon = abs(FFT1EdgeCanon)/max(abs(FFT1EdgeCanon));
 NFFT1EdgeScanner = abs(FFT1EdgeScanner)/max(abs(FFT1EdgeScanner));
 NFFT1EdgeSony = abs(FFT1EdgeSony)/max(abs(FFT1EdgeSony));
-
-%% F-plot
-
-% figure;
-% subplot(1,3,1);
-% plot(abs(NFFT1EdgeHolga));
-% legend('Abs')
-% subplot(1,3,2);
-% plot(real(NFFT1EdgeHolga));
-% legend('Real')
-% title('FFT1EdgeHolga - Normerad')
-% subplot(1,3,3);
-% plot(imag(NFFT1EdgeHolga));
-% legend('Imag')
-% 
-% figure;
-% subplot(1,3,1);
-% plot(abs(NFFT1EdgeCanon));
-% legend('Abs')
-% subplot(1,3,2);
-% plot(real(NFFT1EdgeCanon));
-% legend('Real')
-% title('FFT1EdgeCanon - Normerad')
-% subplot(1,3,3);
-% plot(imag(NFFT1EdgeCanon));
-% legend('Imag')
-% 
-% figure;
-% subplot(1,3,1);
-% plot(abs(NFFT1EdgeScanner));
-% legend('Abs')
-% subplot(1,3,2);
-% plot(real(NFFT1EdgeScanner));
-% legend('Real')
-% title('FFT1EdgeScanner - Normerad')
-% subplot(1,3,3);
-% plot(imag(NFFT1EdgeScanner));
-% legend('Imag')
-% 
-% figure;
-% subplot(1,3,1);
-% plot(abs(NFFT1EdgeSony));
-% legend('Abs')
-% subplot(1,3,2);
-% plot(real(NFFT1EdgeSony));
-% legend('Real')
-% title('FFT1EdgeSony - Normerad')
-% subplot(1,3,3);
-% plot(imag(NFFT1EdgeSony));
-% legend('Imag')
-
 
 
 %% G
@@ -305,8 +255,8 @@ title('Sony')
 
 % Viktfunktion
 a =linspace(1,0,50);
-b =linspace(0,1,50);
-w = cat(2,a,b);
+b =linspace(0,1,51);
+w = cat(2,a,b(2:51));
 
 % Multiplicerar viktfunktionen med absolutbeloppet av skiftade
 % fouriertransformen
@@ -338,6 +288,19 @@ N = 64;
 [X,Y] = meshgrid((1:N));
 [T,R] = cart2pol(X-N/2,Y-N/2);
 
+SR = R ./ R(64/2-1,1);
+
+% Kvantiserar
+QR = round((SR*32));
+
+average_FFTpatch = zeros(32,1);
+weigth = zeros(192,1);
+
+% Viktfunktion
+a =linspace(1,0,16);
+b =linspace(0,1,17);
+w = cat(2,a,b(2:17));
+
 for i = 1:192
     
    % Adds padding aound the image
@@ -347,9 +310,24 @@ for i = 1:192
    
    FFTpatchDC =  FFTpatch / (FFTpatch(33,33));
    
+   for j=1:32
+       
+        Maskm = QR == j;
+
+        % Sum the pixelvalues for each j in QR
+        sum_FFTpatch = sum(sum(Maskm.*FFTpatchDC));
+        
+        % Summerar antal objekt i en viss radie
+        nr_objects = sum(sum(Maskm));
+
+        average_FFTpatch(j) = sum_FFTpatch/nr_objects;
+        
+   end
    
+   norm_average_FFTpatch = average_FFTpatch / max(average_FFTpatch);
    
-   sharpness(i) = sum(sum(FFTpatchDC.*R));
+   % Viktar värdena
+   sharpness(i) = sum(w'.*abs(norm_average_FFTpatch));
     
 end
 
@@ -359,5 +337,4 @@ ylabel('Skarpa')
 
 disp('Sharpest images is:')
 find(sharpness == max(sharpness(:)))
-
 
