@@ -261,10 +261,10 @@ w = cat(2,a,b(2:51));
 % Multiplicerar viktfunktionen med absolutbeloppet av skiftade
 % fouriertransformen
 
-weightHolga = w'.*abs(norm_average_Holga);
-weightCanon = w'.*abs(norm_average_Canon);
-weightScanner = w'.*abs(norm_average_Scanner);
-weightSony = w'.*abs(norm_average_Sony);
+weightHolga = w*abs(norm_average_Holga);
+weightCanon = w*abs(norm_average_Canon);
+weightScanner = w*abs(norm_average_Scanner);
+weightSony = w*abs(norm_average_Sony);
 
 disp('Sharpness of Holga:')
 sum(weightHolga)
@@ -282,7 +282,7 @@ sum(weightSony)
 
 load('winsuint8.mat');
 
-sharpness = zeros(192);
+sharpness = zeros(192,1);
 
 N = 64;
 [X,Y] = meshgrid((1:N));
